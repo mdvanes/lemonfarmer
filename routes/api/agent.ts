@@ -1,9 +1,10 @@
 import { HandlerContext, Status } from "$fresh/server.ts";
+import { config } from "dotenv/mod.ts";
 
 const options = {
   headers: {
     "Content-Type": "application/json",
-    Authorization: "Bearer INSERT_TOKEN_HERE",
+    Authorization: `Bearer ${config().TOKEN}`,
   },
 };
 
