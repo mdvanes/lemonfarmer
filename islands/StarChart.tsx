@@ -1,15 +1,56 @@
 import { useEffect } from "preact/hooks";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import * as d3 from "d3";
+
+function LinePlot({
+  // data1,
+  width = 640,
+  height = 400,
+  marginTop = 20,
+  marginRight = 20,
+  marginBottom = 20,
+  marginLeft = 20,
+}) {
+  // const zoom = d3.zoom()
+  // .scaleExtent([0.5, 32])
+  // .on("zoom", zoomed);
+
+  const data = d3.ticks(-2, 2, 200).map(Math.sin);
+  const x = d3.scaleLinear(
+    [0, data.length - 1],
+    [marginLeft, width - marginRight]
+  );
+  // const y = d3.scaleLinear(d3.extent(data), [height - marginBottom, marginTop]);
+  const y = d3.scaleLinear([0, 1.2], [height - marginBottom, marginTop]);
+  const line = d3.line((d, i) => x(i), y);
+  return (
+    <svg width={width} height={height}>
+      <path
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        d={line(data) ?? ""}
+      />
+      <g fill="white" stroke="currentColor" stroke-width="1.5">
+        {data.map((d, i) => (
+          <circle key={i} cx={x(i)} cy={y(d)} r="2.5" />
+        ))}
+      </g>
+    </svg>
+  );
+}
 
 interface Props {
   items: {
     name: string;
     x: number;
     y: number;
+    type: string;
   }[];
 }
 
-const X_OFFSET = 150;
-const Y_OFFSET = 150;
+const X_OFFSET = 600;
+const Y_OFFSET = 300;
 
 const mapSpaceToCtxCoords = <T extends { x: number; y: number }>(
   item: T
@@ -26,12 +67,12 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 
   // vertical 0
   ctx.moveTo(X_OFFSET, 0);
-  ctx.lineTo(X_OFFSET, 2 * X_OFFSET);
+  ctx.lineTo(X_OFFSET, 2 * Y_OFFSET);
   ctx.stroke();
 
   // horizontal 0
   ctx.moveTo(0, Y_OFFSET);
-  ctx.lineTo(2 * Y_OFFSET, Y_OFFSET);
+  ctx.lineTo(2 * X_OFFSET, Y_OFFSET);
   ctx.stroke();
 
   ctx.lineWidth = 0.25;
@@ -41,16 +82,16 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
     .fill(0)
     .forEach((_, i) => {
       ctx.moveTo(i * 10, 0);
-      ctx.lineTo(i * 10, 2 * X_OFFSET);
+      ctx.lineTo(i * 10, 2 * Y_OFFSET);
       ctx.stroke();
     });
 
   // horizontal ticks
-  Array(Math.floor((2 * X_OFFSET) / 10))
+  Array(Math.floor((2 * Y_OFFSET) / 10))
     .fill(0)
     .forEach((_, i) => {
       ctx.moveTo(0, i * 10);
-      ctx.lineTo(2 * Y_OFFSET, i * 10);
+      ctx.lineTo(2 * X_OFFSET, i * 10);
       ctx.stroke();
     });
 };
@@ -69,10 +110,11 @@ export default function StarChart({ items }: Props) {
 
     drawGrid(ctx);
 
-    items.map(mapSpaceToCtxCoords).forEach(({ name, x, y }) => {
-      ctx.fillStyle = "red";
+    items.map(mapSpaceToCtxCoords).forEach(({ name, type, x, y }) => {
+      const isMe = name === "X1-YU85-99640B";
+      ctx.fillStyle = isMe ? "red" : "black";
       ctx.fillRect(x, y, 5, 5);
-      ctx.fillText(name, x, y);
+      ctx.fillText(`${name} ${type}`, x, y);
     });
   };
 
@@ -82,5 +124,17 @@ export default function StarChart({ items }: Props) {
 
   return (
     <canvas id="starchart" width={2 * X_OFFSET} height={2 * Y_OFFSET}></canvas>
+    // <LinePlot />
+    // https://observablehq.com/@d3/zoomable-scatterplot
+    // <TransformWrapper>
+    //   <TransformComponent>
+    //     <>
+    //       <div style={{ width: 100, height: 100, backgroundColor: "red" }} />
+    //     </>
+    //   </TransformComponent>
+    // </TransformWrapper>
+    // https://joshuatz.com/posts/2020/fixing-jsx-types-between-preact-and-react-libraries/
+    // https://www.npmjs.com/package/react-zoom-pan-pinch
+    // https://codesandbox.io/s/react-typescript-zoom-pan-html-canvas-p3itj?file=/src/Canvas.tsx:4151-4190
   );
 }

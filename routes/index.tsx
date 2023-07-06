@@ -13,19 +13,24 @@ const options = {
 };
 
 interface Waypoint {
-  data: {
-    systemSymbol: string;
-    x: number;
-    y: number;
-  };
+  symbol: string;
+  systemSymbol: string;
+  x: number;
+  y: number;
+  type: string;
 }
 
-export const handler: Handlers<Waypoint | null> = {
+interface Props {
+  data: Waypoint[];
+}
+
+export const handler: Handlers<Waypoint[] | null> = {
   async GET(_, ctx) {
     // const { username } = ctx.params;
 
     const response = await fetch(
-      "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints/X1-YU85-99640B",
+      //       "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints/X1-YU85-99640B",
+      "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints",
       options
     );
 
@@ -34,12 +39,16 @@ export const handler: Handlers<Waypoint | null> = {
         status: Status.NotFound,
       });
     }
-    const waypoint: Waypoint = await response.json();
-    return ctx.render(waypoint);
+
+    // console.log(await response.json());
+
+    const waypoints: Waypoint[] = await response.json();
+    console.log(waypoints);
+    return ctx.render(waypoints);
   },
 };
 
-export default function Home({ data }: PageProps<Waypoint>) {
+export default function Home({ data }: PageProps<Props>) {
   const count = useSignal(3);
 
   return (
@@ -47,11 +56,22 @@ export default function Home({ data }: PageProps<Waypoint>) {
       <Head>
         <title>Lemonfarmer 🍋👨‍🌾</title>
       </Head>
-      <div class="p-4 mx-auto max-w-screen-md">
-        {data.data.systemSymbol} 
+      <div >
+        {/* class="p-4 mx-auto max-w-screen-md" */}
+        {data.data[0].systemSymbol}
         🍋👨‍🌾
         {/* <Counter count={count} /> */}
-        <StarChart items={[{name: data.data.systemSymbol, x: data.data.x, y: data.data.y}]} />
+        <StarChart
+          // items={[
+          //   { name: data.data.systemSymbol, x: data.data.x, y: data.data.y },
+          // ]}
+          items={data.data.map((item) => ({
+            name: item.symbol,
+            x: item.x,
+            y: item.y,
+            type: item.type
+          }))}
+        />
       </div>
     </>
   );
