@@ -51,14 +51,15 @@ interface Props {
 
 const X_OFFSET = 600;
 const Y_OFFSET = 300;
+const SCALE = 5;
 
 const mapSpaceToCtxCoords = <T extends { x: number; y: number }>(
   item: T
 ): T => {
   return {
     ...item,
-    x: item.x + X_OFFSET,
-    y: item.y + Y_OFFSET,
+    x: item.x * SCALE + X_OFFSET,
+    y: item.y * SCALE + Y_OFFSET,
   };
 };
 
@@ -77,21 +78,23 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 
   ctx.lineWidth = 0.25;
 
+  const tickInterval = 20;
+
   // vertical ticks
-  Array(Math.floor((2 * X_OFFSET) / 10))
+  Array(Math.floor((2 * X_OFFSET) / tickInterval))
     .fill(0)
     .forEach((_, i) => {
-      ctx.moveTo(i * 10, 0);
-      ctx.lineTo(i * 10, 2 * Y_OFFSET);
+      ctx.moveTo(i * tickInterval, 0);
+      ctx.lineTo(i * tickInterval, 2 * Y_OFFSET);
       ctx.stroke();
     });
 
   // horizontal ticks
-  Array(Math.floor((2 * Y_OFFSET) / 10))
+  Array(Math.floor((2 * Y_OFFSET) / tickInterval))
     .fill(0)
     .forEach((_, i) => {
-      ctx.moveTo(0, i * 10);
-      ctx.lineTo(2 * X_OFFSET, i * 10);
+      ctx.moveTo(0, i * tickInterval);
+      ctx.lineTo(2 * X_OFFSET, i * tickInterval);
       ctx.stroke();
     });
 };
@@ -114,7 +117,7 @@ export default function StarChart({ items }: Props) {
       const isMe = name === "X1-YU85-99640B";
       ctx.fillStyle = isMe ? "red" : "black";
       ctx.fillRect(x, y, 5, 5);
-      ctx.fillText(`${name} ${type}`, x, y);
+      ctx.fillText(`${name} (${type})`, x, y + (isMe ? 10 : 0));
     });
   };
 
