@@ -31,14 +31,10 @@ const getMyAgent = async (): Promise<Agent> => {
 const getAgentHqSystem = (agent: Agent): string =>
   agent.headquarters.split("-").slice(0, 2).join("-");
 
-export const getCurrentSystemWaypoints = async (): Promise<Waypoint[]> => {
-  const myAgent = await getMyAgent();
-  const agentHqSystem = getAgentHqSystem(myAgent);
-  console.log(agentHqSystem);
-
+const getSystemWaypoints = async (system: string): Promise<Waypoint[]> => {
   const response = await fetch(
     //       "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints/X1-YU85-99640B",
-    `https://api.spacetraders.io/v2/systems/${agentHqSystem}/waypoints`,
+    `https://api.spacetraders.io/v2/systems/${system}/waypoints`,
     options
   );
 
@@ -53,4 +49,10 @@ export const getCurrentSystemWaypoints = async (): Promise<Waypoint[]> => {
 
   const waypoints: WaypointsResponse = await response.json();
   return waypoints.data;
+};
+
+export const getCurrentSystemWaypoints = async (): Promise<Waypoint[]> => {
+  const myAgent = await getMyAgent();
+  const agentHqSystem = getAgentHqSystem(myAgent);
+  return getSystemWaypoints(agentHqSystem);
 };
