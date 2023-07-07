@@ -9,12 +9,11 @@ function multiply2(num: number): number {
 }
 
 function concat(
-    a: number,
-    transformer: (a: number) => string,
-  ): [number, string] {
-    return [a, transformer(a)]
-  }
-  
+  a: number,
+  transformer: (a: number) => string
+): [number, string] {
+  return [a, transformer(a)];
+}
 
 export const Fp = () => {
   return <div>fp {pipe(1, add1, multiply2)}</div>;
