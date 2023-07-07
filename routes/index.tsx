@@ -48,19 +48,27 @@ export const handler: Handlers<Waypoint[] | null> = {
   },
 };
 
+const APP_TITLE = '🍋 Lemon 👨‍🌾 Farmer'
+
 export default function Home({ data }: PageProps<Props>) {
   const count = useSignal(3);
 
   return (
     <>
       <Head>
-        <title>Lemonfarmer 🍋👨‍🌾</title>
+        <title>{APP_TITLE}</title>
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍🌾</text></svg>"
+        />
       </Head>
-      <div >
-        {/* class="p-4 mx-auto max-w-screen-md" */}
-        {data.data[0].systemSymbol}
-        🍋👨‍🌾
+      <div class="mx-auto max-w-7xl pt-4">
         {/* <Counter count={count} /> */}
+        <div class="flex pb-8">
+          <div class="flex-1">{APP_TITLE}</div>
+          <div class="flex-none">System {data.data[0].systemSymbol}</div>
+        </div>
+
         <StarChart
           // items={[
           //   { name: data.data.systemSymbol, x: data.data.x, y: data.data.y },
@@ -69,7 +77,7 @@ export default function Home({ data }: PageProps<Props>) {
             name: item.symbol,
             x: item.x,
             y: item.y,
-            type: item.type
+            type: item.type,
           }))}
         />
       </div>

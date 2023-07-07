@@ -1,6 +1,7 @@
 import { useEffect } from "preact/hooks";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import * as d3 from "d3";
+import { Fp } from "../components/Fp.tsx";
 
 function LinePlot({
   // data1,
@@ -49,8 +50,8 @@ interface Props {
   }[];
 }
 
-const X_OFFSET = 600;
-const Y_OFFSET = 300;
+const X_OFFSET = 640;
+const Y_OFFSET = 320;
 const SCALE = 5;
 
 const mapSpaceToCtxCoords = <T extends { x: number; y: number }>(
@@ -126,7 +127,14 @@ export default function StarChart({ items }: Props) {
   }, []);
 
   return (
-    <canvas id="starchart" width={2 * X_OFFSET} height={2 * Y_OFFSET}></canvas>
+    <>
+      <Fp />
+      <canvas
+        id="starchart"
+        width={2 * X_OFFSET}
+        height={2 * Y_OFFSET}
+      ></canvas>
+    </>
     // <LinePlot />
     // https://observablehq.com/@d3/zoomable-scatterplot
     // <TransformWrapper>
