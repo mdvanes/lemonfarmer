@@ -2,9 +2,9 @@ import { paths, external } from "./generated/schema.d.ts";
 
 /*
 Codegen:
-npx openapi-typescript https://raw.githubusercontent.com/SpaceTradersAPI/api-docs/main/reference/SpaceTraders.json -o ./generated/schema.d.ts
-// Almost works:
-deno run https://esm.sh/openapi-typescript/bin/cli.js https://raw.githubusercontent.com/SpaceTradersAPI/api-docs/main/reference/SpaceTraders.json -o ./generated/schema.d.ts
+npx openapi-typescript https://raw.githubusercontent.com/SpaceTradersAPI/api-docs/main/reference/SpaceTraders.json --alphabetize --immutable-types -o ./generated/schema.d.ts
+Almost works (maybe with https://github.com/drwpow/openapi-typescript/tree/main/packages/openapi-typescript#-node):
+deno run https://esm.sh/openapi-typescript/bin/cli.js https://raw.githubusercontent.com/SpaceTradersAPI/api-docs/main/reference/SpaceTraders.json --alphabetize --immutable-types -o ./generated/schema.d.ts
 */
 
 // export interface Agent {
