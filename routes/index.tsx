@@ -21,7 +21,7 @@ interface Waypoint {
 }
 
 interface Props {
-  waypoints: Waypoint[];
+  waypoints: readonly Waypoint[];
 }
 
 export const handler: Handlers<Props> = {
