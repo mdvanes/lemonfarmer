@@ -2,8 +2,10 @@ import { Head } from "$fresh/runtime.ts";
 // import Counter from "../islands/Counter.tsx";
 import { Handlers, PageProps, Status } from "$fresh/server.ts";
 import { config } from "dotenv/mod.ts";
-import StarChart from "../islands/StarChart.tsx";
 import { getCurrentSystemWaypoints } from "../util/getCurrentSystemWaypoints.ts";
+import StarChart from "../islands/StarChart.tsx";
+import { Waypoint } from "../spacetrader.types.ts";
+import { Fp } from "../components/Fp.tsx";
 
 const options = {
   headers: {
@@ -12,13 +14,13 @@ const options = {
   },
 };
 
-interface Waypoint {
-  symbol: string;
-  systemSymbol: string;
-  x: number;
-  y: number;
-  type: string;
-}
+// interface Waypoint {
+//   symbol: string;
+//   systemSymbol: string;
+//   x: number;
+//   y: number;
+//   type: string;
+// }
 
 interface Props {
   waypoints: readonly Waypoint[];
@@ -85,10 +87,8 @@ export default function Home({ data: { waypoints } }: PageProps<Props>) {
           <div class="flex-none">System {waypoints[0].systemSymbol}</div>
         </div>
 
+        <Fp />
         <StarChart
-          // items={[
-          //   { name: data.data.systemSymbol, x: data.data.x, y: data.data.y },
-          // ]}
           items={waypoints.map((item) => ({
             name: item.symbol,
             x: item.x,
