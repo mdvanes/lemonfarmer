@@ -173,7 +173,7 @@ const StarChart = ({ items }: Props) => {
 
     if (viewRef.current) {
       const zoom = d3
-        .zoom()
+        .zoom<SVGRectElement, unknown>()
         // Max zoom out / in factor
         // .scaleExtent([-5, 40])
         .scaleExtent([1, 40])
@@ -191,16 +191,16 @@ const StarChart = ({ items }: Props) => {
             updateYAxis(transform);
           }
         });
-      d3.select(viewRef.current).call(zoom as any);
+      d3.select(viewRef.current).call(zoom);
     }
   }, [gxRef, gyRef, viewRef]);
 
   return (
     <>
       <Head>
-        <link rel="stylesheet" href="star-chart-d3-v2.css" />
+        <link rel="stylesheet" href="star-chart.css" />
       </Head>
-      <svg width={width} height={height} className="star-chart-d3-v2">
+      <svg width={width} height={height} className="star-chart">
         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0.0%" stop-color="#2c7bb6"></stop>
           <stop offset="12.5%" stop-color="#00a6ca"></stop>

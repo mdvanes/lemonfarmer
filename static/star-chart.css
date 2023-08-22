@@ -1,17 +1,17 @@
-.star-chart-d3-v2 .axis .domain {
+.star-chart .axis .domain {
   display: none;
 }
 
-.star-chart-d3-v2 .axis line {
+.star-chart .axis line {
   stroke-opacity: 0.3;
   shape-rendering: crispEdges;
 }
 
-.star-chart-d3-v2 {
+.star-chart {
   user-select: none;
 }
 
-.star-chart-d3-v2 .view {
+.star-chart .view {
   fill: url(#gradient);
   stroke: #000;
 }
