@@ -23,16 +23,16 @@ const getStationsLabel = (items: ChartItem[], d: ChartItem) => {
 
 const getItemColor = (d: ChartItem) => {
   if (d.type === "PLANET") {
-    return "blue"; // 🪐
+    return "blue";
   }
   if (d.type === "JUMP_GATE") {
-    return "purple"; // 🌉
+    return "purple";
   }
   if (d.type === "GAS_GIANT") {
-    return "red"; // ⭐
+    return "red";
   }
   if (d.type === "ASTEROID_FIELD") {
-    return "green"; // 🌠
+    return "green";
   }
   return "black";
 };
@@ -43,33 +43,18 @@ const createGetItemIcon =
     yScale: d3.ScaleLinear<number, number, never>
   ) =>
   (d: ChartItem) => {
+    const c = { x: xScale(d.x), y: yScale(d.y) };
     if (d.type === "PLANET") {
-      return (
-        <text x={xScale(d.x)} y={yScale(d.y)}>
-          🪐
-        </text>
-      );
+      return <text {...c}>🪐</text>;
     }
     if (d.type === "JUMP_GATE") {
-      return (
-        <text x={xScale(d.x)} y={yScale(d.y)}>
-          🌉
-        </text>
-      ); // 🌉
+      return <text {...c}>🌉</text>;
     }
     if (d.type === "GAS_GIANT") {
-      return (
-        <text x={xScale(d.x)} y={yScale(d.y)}>
-          ⭐
-        </text>
-      ); // ⭐
+      return <text {...c}>⭐</text>;
     }
     if (d.type === "ASTEROID_FIELD") {
-      return (
-        <text x={xScale(d.x)} y={yScale(d.y)}>
-          🌠
-        </text>
-      ); // 🌠
+      return <text {...c}>🌠</text>;
     }
     return <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" />;
   };
@@ -86,12 +71,15 @@ const StarChartItem = ({
     <g fill={getItemColor(d)} stroke={getItemColor(d)}>
       {getItemIcon(d)}
       {/* <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" /> */}
-      <text x={xScale(d.x + 3)} y={yScale(d.y - 3)} style={{ fontSize: 12 }}>
-        {d.name}
-      </text>
-      <text x={xScale(d.x + 3)} y={yScale(d.y + 4)} style={{ fontSize: 12 }}>
-        {getMoonsLabel(satelliteItems, d)} {getStationsLabel(satelliteItems, d)}
-      </text>
+      <g className="chart-item-label">
+        <text x={xScale(d.x + 3)} y={yScale(d.y - 3)}>
+          {d.name}
+        </text>
+        <text x={xScale(d.x + 3)} y={yScale(d.y + 4)}>
+          {getMoonsLabel(satelliteItems, d)}{" "}
+          {getStationsLabel(satelliteItems, d)}
+        </text>
+      </g>
     </g>
   );
 };

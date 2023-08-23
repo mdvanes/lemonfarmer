@@ -22,3 +22,7 @@ body {
   fill: black;
   stroke: #000;
 }
+
+.chart-item-label {
+  font-size: 12px;
+}
