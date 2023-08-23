@@ -22,6 +22,7 @@ type ZoomEventTransform = {
 
 interface Props {
   items: ChartItem[];
+  centered?: boolean;
 }
 
 const styleTicks = () => {
@@ -82,23 +83,48 @@ const maxItemProp = (items: ChartItem[], itemProp: "x" | "y"): number => {
   return Math.max(...absMinMax);
 };
 
+const domainForAxis = (
+  items: ChartItem[],
+  axis: "x" | "y",
+  centered: boolean
+): [number, number] => {
+  const MARGIN = 50;
+
+  const minMax = d3.extent(items.map((item) => item[axis]));
+
+  if (centered) {
+    const absMinMax = minMax.map((x) => (x ? Math.abs(x) : 0));
+    const max = Math.max(...absMinMax);
+    return [-1 * max - MARGIN, max + MARGIN];
+  }
+
+  const [min, max] = minMax.map((x) => (x ? x : 0));
+  const relativeMargin = (max - min) / 10;
+  return [min - relativeMargin, max + relativeMargin];
+};
+
 const getSatelliteItems = (items: ChartItem[], d: ChartItem): ChartItem[] => {
   return items.filter((item) => item.x === d.x && item.y === d.y);
 };
 
-const StarChart = ({ items }: Props) => {
+const StarChart = ({ items, centered = true }: Props) => {
   // console.log(items);
   const gxRef = useRef<SVGGElement>(null);
   const gyRef = useRef<SVGGElement>(null);
   const dataPointsRef = useRef<SVGGElement>(null);
   const viewRef = useRef<SVGRectElement>(null);
 
+  const minMax = d3.extent(items.map((item) => item.x));
   const maxX = maxItemProp(items, "x");
   const maxY = maxItemProp(items, "y");
 
+  // const domainX = minMax || [-1 * maxX - 50, maxX + 50];
+  const domainX = domainForAxis(items, "x", centered);
+  const domainY = domainForAxis(items, "y", centered);
+
   const xScale = d3
     .scaleLinear()
-    .domain([-1 * maxX - 50, maxX + 50])
+    .domain(domainX)
     // .domain(!xMinMax[0] || !xMinMax[1] ? [0, 0] : xMinMax)
     // .domain([-1 * width - 1, width + 1])
     // .domain([-1 * width - 1, width + 1])
@@ -108,7 +134,7 @@ const StarChart = ({ items }: Props) => {
 
   const yScale = d3
     .scaleLinear()
-    .domain([-1 * maxY - 50, maxY + 50])
+    .domain(domainY)
     // .domain(!yMinMax[0] || !yMinMax[1] ? [0, 0] : yMinMax)
     // .domain([-1 * height - 1, height + 1])
     // .range(!yMinMax[0] || !yMinMax[1] ? [0, 0] : yMinMax);
@@ -226,7 +252,10 @@ const StarChart = ({ items }: Props) => {
           />
           {items
             .filter(
-              (item) => item.type !== "MOON" && item.type !== "ORBITAL_STATION"
+              (item) =>
+                item.type !== "NEBULA" &&
+                item.type !== "MOON" &&
+                item.type !== "ORBITAL_STATION"
             )
             .map((d, i) => (
               <StarChartItem

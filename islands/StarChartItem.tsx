@@ -7,21 +7,43 @@ interface StarChartItemsProps {
   yScale: d3.ScaleLinear<number, number, never>;
 }
 
-const getMoonsLabel = (items: ChartItem[], d: ChartItem) => {
-  const nr = items.filter((item) => item.type === "MOON").length;
+const getMoonsLabel = (items: ChartItem[]) => {
+  const nr = items.filter(
+    (item) => item.type !== "NEBULA" && item.type === "MOON"
+  ).length;
 
   // return nr > 0 ? `+ ${nr} moons 🌙` : "";
   return "🌙 ".repeat(nr);
 };
 
-const getStationsLabel = (items: ChartItem[], d: ChartItem) => {
-  const nr = items.filter((item) => item.type === "ORBITAL_STATION").length;
+const getStationsLabel = (items: ChartItem[]) => {
+  const nr = items.filter(
+    (item) => item.type !== "NEBULA" && item.type === "ORBITAL_STATION"
+  ).length;
 
   // return nr > 0 ? `+ ${nr} stations 🛰️` : "";
   return "🛰️ ".repeat(nr);
 };
 
 const getItemColor = (d: ChartItem) => {
+  if (d.type === "NEBULA") {
+    return "grey";
+  }
+  if (d.type === "BLUE_STAR") {
+    return "blue";
+  }
+  if (d.type === "RED_STAR") {
+    return "red";
+  }
+  if (d.type === "ORANGE_STAR") {
+    return "orange";
+  }
+  if (d.type === "WHITE_DWARF") {
+    return "white";
+  }
+  if (d.type === "HYPERGIANT") {
+    return "yellow";
+  }
   if (d.type === "PLANET") {
     return "blue";
   }
@@ -34,7 +56,7 @@ const getItemColor = (d: ChartItem) => {
   if (d.type === "ASTEROID_FIELD") {
     return "green";
   }
-  return "black";
+  return "white";
 };
 
 const createGetItemIcon =
@@ -44,6 +66,14 @@ const createGetItemIcon =
   ) =>
   (d: ChartItem) => {
     const c = { x: xScale(d.x), y: yScale(d.y) };
+    const cc = {
+      cx: xScale(d.x),
+      cy: yScale(d.y),
+      onClick: () => alert("clicked " + d.type),
+    };
+    if (d.type === "NEBULA") {
+      return "orange";
+    }
     if (d.type === "PLANET") {
       return <text {...c}>🪐</text>;
     }
@@ -56,7 +86,13 @@ const createGetItemIcon =
     if (d.type === "ASTEROID_FIELD") {
       return <text {...c}>🌠</text>;
     }
-    return <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" />;
+    if (d.type === "HYPERGIANT") {
+      return <circle {...cc} r="10" />;
+    }
+    if (["BLUE_STAR", "RED_STAR", "ORANGE_STAR"].includes(d.type)) {
+      return <circle {...cc} r="5" />;
+    }
+    return <circle {...cc} r="2.5" />;
   };
 
 const StarChartItem = ({
@@ -76,8 +112,7 @@ const StarChartItem = ({
           {d.name}
         </text>
         <text x={xScale(d.x + 3)} y={yScale(d.y + 4)}>
-          {getMoonsLabel(satelliteItems, d)}{" "}
-          {getStationsLabel(satelliteItems, d)}
+          {getMoonsLabel(satelliteItems)} {getStationsLabel(satelliteItems)}
         </text>
       </g>
     </g>

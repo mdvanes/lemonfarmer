@@ -9,6 +9,7 @@ import * as $$0 from "./islands/StarChart.tsx";
 import * as $$1 from "./islands/StarChartD3Old.tsx";
 import * as $$2 from "./islands/StarChartItem.tsx";
 import * as $$3 from "./islands/StarChartOld.tsx";
+import * as $$4 from "./islands/SystemsList.tsx";
 
 const manifest = {
   routes: {
@@ -21,6 +22,7 @@ const manifest = {
     "./islands/StarChartD3Old.tsx": $$1,
     "./islands/StarChartItem.tsx": $$2,
     "./islands/StarChartOld.tsx": $$3,
+    "./islands/SystemsList.tsx": $$4,
   },
   baseUrl: import.meta.url,
 };

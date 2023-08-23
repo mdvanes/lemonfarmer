@@ -3,45 +3,22 @@ import { Head } from "$fresh/runtime.ts";
 import { Handlers, PageProps, Status } from "$fresh/server.ts";
 import { getCurrentSystemWaypoints } from "../util/getCurrentSystemWaypoints.ts";
 import StarChart from "../islands/StarChart.tsx";
-import { Waypoint } from "../spacetrader.types.ts";
+import { ChartItem, System, Waypoint } from "../spacetrader.types.ts";
 import { Fp } from "../components/Fp.tsx";
+import { getSystems } from "../util/getSystems.ts";
+import SystemsList from "../islands/SystemsList.tsx";
 
 interface Props {
   waypoints: readonly Waypoint[];
+  allSystems: readonly System[];
 }
 
 export const handler: Handlers<Props> = {
   async GET(_, ctx) {
-    // const { username } = ctx.params;
-    // const response1 = await fetch(
-    //   //       "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints/X1-YU85-99640B",
-    //   "https://api.spacetraders.io/v2/my/agent",
-    //   options
-    // );
-    // const myAgent: MyAgentResponse = await response1.json();
-    // console.log(myAgent);
-
-    // const response = await fetch(
-    //   //       "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints/X1-YU85-99640B",
-    //   "https://api.spacetraders.io/v2/systems/X1-YU85/waypoints",
-    //   options
-    // );
-
-    // if (response.status === 404) {
-    //   return new Response("Start Location: Not Found", {
-    //     status: Status.NotFound,
-    //   });
-    // }
-
-    // // console.log(await response.json());
-
-    // const waypoints: Waypoint[] = await response.json();
-    // // console.log(waypoints);
-    // return ctx.render(waypoints);
-
     try {
       const waypoints = await getCurrentSystemWaypoints();
-      return ctx.render({ waypoints });
+      const allSystems = await getSystems();
+      return ctx.render({ waypoints, allSystems });
     } catch (err) {
       return new Response("Can't retrieve waypoints", {
         status: Status.NotFound,
@@ -52,7 +29,9 @@ export const handler: Handlers<Props> = {
 
 const APP_TITLE = "🍋 Lemon 👨‍🌾 Farmer";
 
-export default function Home({ data: { waypoints } }: PageProps<Props>) {
+export default function Home({
+  data: { waypoints, allSystems },
+}: PageProps<Props>) {
   // const count = useSignal(3);
 
   return (
@@ -73,12 +52,28 @@ export default function Home({ data: { waypoints } }: PageProps<Props>) {
 
         <Fp />
         <StarChart
-          items={waypoints.map((item) => ({
-            name: item.symbol,
-            x: item.x,
-            y: item.y,
-            type: item.type,
-          }))}
+          items={waypoints.map(
+            (item) =>
+              ({
+                name: item.symbol,
+                x: item.x,
+                y: item.y,
+                type: item.type,
+              } as ChartItem)
+          )}
+        />
+        <SystemsList systems={allSystems} />
+        <StarChart
+          items={allSystems.map(
+            (item) =>
+              ({
+                name: item.symbol,
+                x: item.x,
+                y: item.y,
+                type: item.type,
+              } as ChartItem)
+          )}
+          centered={false}
         />
       </div>
     </>

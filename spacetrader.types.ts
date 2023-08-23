@@ -41,6 +41,14 @@ export type Waypoint = external["../models/Waypoint.json"];
 export type WaypointsResponse =
   paths["/systems/{systemSymbol}/waypoints"]["get"]["responses"][200]["content"]["application/json"];
 
-export interface ChartItem extends Pick<Waypoint, "type" | "x" | "y"> {
+export interface ChartItem {
   name: string;
+  x: number;
+  y: number;
+  type: Waypoint["type"] & System["type"];
 }
+
+export type System = external["../models/System.json"];
+
+export type SystemsResponse =
+  paths["/systems"]["get"]["responses"][200]["content"]["application/json"];

@@ -26,3 +26,8 @@ body {
 .chart-item-label {
   font-size: 12px;
 }
+
+.star-chart circle:hover {
+  cursor: pointer;
+  stroke-width: 10;
+}
