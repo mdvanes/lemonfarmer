@@ -1,11 +1,9 @@
 import { Head } from "$fresh/runtime.ts";
-// import Counter from "../islands/Counter.tsx";
 import { Handlers, PageProps, Status } from "$fresh/server.ts";
-import { getCurrentSystemWaypoints } from "../util/getCurrentSystemWaypoints.ts";
-import StarChart from "../islands/StarChart.tsx";
-import { ChartItem, System, Waypoint } from "../spacetrader.types.ts";
-import { Fp } from "../components/Fp.tsx";
-import { getSystems } from "../util/getSystems.ts";
+import StarChart from "../../islands/StarChart.tsx";
+import { ChartItem, System, Waypoint } from "../../spacetrader.types.ts";
+import { getCurrentSystemWaypoints } from "../../util/getCurrentSystemWaypoints.ts";
+import { getSystems } from "../../util/getSystems.ts";
 
 interface Props {
   waypoints: readonly Waypoint[];
@@ -43,15 +41,13 @@ export default function Home({
         />
       </Head>
       <div class="mx-auto max-w-7xl pt-4">
-        {/* <Counter count={count} /> */}
         <div class="flex pb-8">
           <div class="flex-1">{APP_TITLE}</div>
           <div class="flex-none">System {waypoints[0].systemSymbol}</div>
         </div>
 
-        <Fp />
         <StarChart
-          items={waypoints.map(
+          items={allSystems.map(
             (item) =>
               ({
                 name: item.symbol,
@@ -60,8 +56,9 @@ export default function Home({
                 type: item.type,
               } as ChartItem)
           )}
+          centered={false}
         />
-        <a href="/systems">all systems</a>
+        <a href="/">agent system</a>
       </div>
     </>
   );
