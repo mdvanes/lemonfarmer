@@ -2,6 +2,7 @@ import { ChartItem } from "../spacetrader.types.ts";
 
 interface StarChartItemsProps {
   d: ChartItem;
+  hq: [string, string];
   satelliteItems: ChartItem[];
   xScale: d3.ScaleLinear<number, number, never>;
   yScale: d3.ScaleLinear<number, number, never>;
@@ -100,6 +101,7 @@ const StarChartItem = ({
   satelliteItems,
   xScale,
   yScale,
+  hq,
 }: StarChartItemsProps) => {
   const getItemIcon = createGetItemIcon(xScale, yScale);
 
@@ -109,6 +111,7 @@ const StarChartItem = ({
       {/* <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" /> */}
       <g className="chart-item-label">
         <text x={xScale(d.x + 3)} y={yScale(d.y - 3)}>
+          {d.name === hq.join("-") || d.name === hq[0] ? "🚀" : ""}
           {d.name}
         </text>
         <text x={xScale(d.x + 3)} y={yScale(d.y + 4)}>

@@ -22,6 +22,7 @@ type ZoomEventTransform = {
 
 interface Props {
   items: ChartItem[];
+  hq: [string, string]; // "X1-JX88-42150B" '🚀'
   centered?: boolean;
 }
 
@@ -107,7 +108,7 @@ const getSatelliteItems = (items: ChartItem[], d: ChartItem): ChartItem[] => {
   return items.filter((item) => item.x === d.x && item.y === d.y);
 };
 
-const StarChart = ({ items, centered = true }: Props) => {
+const StarChart = ({ items, hq, centered = true }: Props) => {
   // console.log(items);
   const gxRef = useRef<SVGGElement>(null);
   const gyRef = useRef<SVGGElement>(null);
@@ -264,6 +265,7 @@ const StarChart = ({ items, centered = true }: Props) => {
                 satelliteItems={getSatelliteItems(items, d)}
                 xScale={xScale}
                 yScale={yScale}
+                hq={hq}
               />
             ))}
         </g>

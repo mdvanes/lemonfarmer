@@ -20,12 +20,22 @@ const getMyAgent = async (): Promise<Agent> => {
   }
 
   const myAgent: MyAgentResponse = await response.json();
+  // console.log(myAgent.data);
 
   return myAgent.data;
 };
 
-const getAgentHqSystem = (agent: Agent): string =>
-  agent.headquarters.split("-").slice(0, 2).join("-");
+const getAgentHq = (agent: Agent): [string, string] => {
+  const parts = agent.headquarters.split("-");
+  return [parts.slice(0, 2).join("-"), parts[2]];
+};
+
+export const getMyAgentHq = async (): Promise<[string, string]> => {
+  return getAgentHq(await getMyAgent());
+};
+
+// const getAgentHqSystem = (agent: Agent): string =>
+//   agent.headquarters.split("-").slice(0, 2).join("-");
 
 export const getSystemWaypoints = async (
   system: string
@@ -50,7 +60,7 @@ export const getSystemWaypoints = async (
 export const getCurrentSystemWaypoints = async (): Promise<
   readonly Waypoint[]
 > => {
-  const myAgent = await getMyAgent();
-  const agentHqSystem = getAgentHqSystem(myAgent);
+  // const myAgent = await getMyAgent();
+  const [agentHqSystem] = await getMyAgentHq();
   return getSystemWaypoints(agentHqSystem);
 };

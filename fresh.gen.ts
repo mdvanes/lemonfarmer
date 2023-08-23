@@ -7,10 +7,11 @@ import * as $1 from "./routes/api/init.ts";
 import * as $2 from "./routes/index.tsx";
 import * as $3 from "./routes/systems/[symbol].tsx";
 import * as $4 from "./routes/systems/index.tsx";
-import * as $$0 from "./islands/StarChart.tsx";
-import * as $$1 from "./islands/StarChartD3Old.tsx";
-import * as $$2 from "./islands/StarChartItem.tsx";
-import * as $$3 from "./islands/StarChartOld.tsx";
+import * as $$0 from "./islands/NavLink.tsx";
+import * as $$1 from "./islands/StarChart.tsx";
+import * as $$2 from "./islands/StarChartD3Old.tsx";
+import * as $$3 from "./islands/StarChartItem.tsx";
+import * as $$4 from "./islands/StarChartOld.tsx";
 
 const manifest = {
   routes: {
@@ -21,10 +22,11 @@ const manifest = {
     "./routes/systems/index.tsx": $4,
   },
   islands: {
-    "./islands/StarChart.tsx": $$0,
-    "./islands/StarChartD3Old.tsx": $$1,
-    "./islands/StarChartItem.tsx": $$2,
-    "./islands/StarChartOld.tsx": $$3,
+    "./islands/NavLink.tsx": $$0,
+    "./islands/StarChart.tsx": $$1,
+    "./islands/StarChartD3Old.tsx": $$2,
+    "./islands/StarChartItem.tsx": $$3,
+    "./islands/StarChartOld.tsx": $$4,
   },
   baseUrl: import.meta.url,
 };

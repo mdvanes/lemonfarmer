@@ -2,18 +2,22 @@ import { Head } from "$fresh/runtime.ts";
 import { Handlers, PageProps, Status } from "$fresh/server.ts";
 import StarChart from "../../islands/StarChart.tsx";
 import { ChartItem, Waypoint } from "../../spacetrader.types.ts";
-import { getSystemWaypoints } from "../../util/getCurrentSystemWaypoints.ts";
+import {
+  getMyAgentHq,
+  getSystemWaypoints,
+} from "../../util/getCurrentSystemWaypoints.ts";
 
 interface Props {
   waypoints: readonly Waypoint[];
+  hq: [string, string];
 }
 
 export const handler: Handlers<Props> = {
   async GET(_, ctx) {
-    console.log(ctx.params.symbol);
     try {
+      const hq = await getMyAgentHq();
       const waypoints = await getSystemWaypoints(ctx.params.symbol);
-      return ctx.render({ waypoints });
+      return ctx.render({ hq, waypoints });
     } catch (err) {
       return new Response("Can't retrieve waypoints", {
         status: Status.NotFound,
@@ -25,12 +29,9 @@ export const handler: Handlers<Props> = {
 const APP_TITLE = "🍋 Lemon 👨‍🌾 Farmer";
 
 export default function Home({
-  data: { waypoints },
-  url,
+  data: { waypoints, hq },
   params,
 }: PageProps<Props>) {
-  // const count = useSignal(3);
-
   return (
     <>
       <Head>
@@ -46,6 +47,11 @@ export default function Home({
           <div class="flex-none">System {params.symbol}</div>
         </div>
 
+        <div class="actions">
+          <a href="/systems">◀️</a>
+          <a href="/">🚀</a>
+        </div>
+
         <StarChart
           items={waypoints.map(
             (item) =>
@@ -56,8 +62,8 @@ export default function Home({
                 type: item.type,
               } as ChartItem)
           )}
+          hq={hq}
         />
-        <a href="/systems">all systems</a>
       </div>
     </>
   );

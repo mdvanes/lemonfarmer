@@ -1,23 +1,27 @@
 import { Head } from "$fresh/runtime.ts";
 // import Counter from "../islands/Counter.tsx";
 import { Handlers, PageProps, Status } from "$fresh/server.ts";
-import { getCurrentSystemWaypoints } from "../util/getCurrentSystemWaypoints.ts";
-import StarChart from "../islands/StarChart.tsx";
-import { ChartItem, System, Waypoint } from "../spacetrader.types.ts";
+import { useState } from "preact/hooks";
 import { Fp } from "../components/Fp.tsx";
-import { getSystems } from "../util/getSystems.ts";
+import StarChart from "../islands/StarChart.tsx";
+import { ChartItem, Waypoint } from "../spacetrader.types.ts";
+import {
+  getCurrentSystemWaypoints,
+  getMyAgentHq,
+} from "../util/getCurrentSystemWaypoints.ts";
+import NavLink from "../islands/NavLink.tsx";
 
 interface Props {
+  hq: [string, string];
   waypoints: readonly Waypoint[];
-  allSystems: readonly System[];
 }
 
 export const handler: Handlers<Props> = {
   async GET(_, ctx) {
     try {
+      const hq = await getMyAgentHq();
       const waypoints = await getCurrentSystemWaypoints();
-      const allSystems = await getSystems();
-      return ctx.render({ waypoints, allSystems });
+      return ctx.render({ hq, waypoints });
     } catch (err) {
       return new Response("Can't retrieve waypoints", {
         status: Status.NotFound,
@@ -28,10 +32,9 @@ export const handler: Handlers<Props> = {
 
 const APP_TITLE = "🍋 Lemon 👨‍🌾 Farmer";
 
-export default function Home({
-  data: { waypoints, allSystems },
-}: PageProps<Props>) {
+export default function Home({ data: { hq, waypoints } }: PageProps<Props>) {
   // const count = useSignal(3);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
@@ -44,12 +47,21 @@ export default function Home({
       </Head>
       <div class="mx-auto max-w-7xl pt-4">
         {/* <Counter count={count} /> */}
+        {/* TODO Deduplicate this header & actions and Head - they are now in 3 places (here, /system/ & /system/slug) */}
         <div class="flex pb-8">
           <div class="flex-1">{APP_TITLE}</div>
           <div class="flex-none">System {waypoints[0].systemSymbol}</div>
         </div>
 
         <Fp />
+
+        <div class="actions">
+          <NavLink />
+          <a title="go to hq system" href="/">
+            🚀
+          </a>
+        </div>
+
         <StarChart
           items={waypoints.map(
             (item) =>
@@ -60,8 +72,8 @@ export default function Home({
                 type: item.type,
               } as ChartItem)
           )}
+          hq={hq}
         />
-        <a href="/systems">all systems</a>
       </div>
     </>
   );
