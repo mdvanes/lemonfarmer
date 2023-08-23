@@ -192,7 +192,7 @@ const StarChart = ({ items, centered = true }: Props) => {
   return (
     <>
       <Head>
-        <link rel="stylesheet" href="star-chart.css" />
+        <link rel="stylesheet" href="/star-chart.css" />
       </Head>
       <svg width={width} height={height} className="star-chart">
         {/* <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">

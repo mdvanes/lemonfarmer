@@ -69,7 +69,7 @@ const createGetItemIcon =
     const cc = {
       cx: xScale(d.x),
       cy: yScale(d.y),
-      onClick: () => alert("clicked " + d.type),
+      onClick: () => location.assign(`/systems/${d.name}`),
     };
     if (d.type === "NEBULA") {
       return "orange";

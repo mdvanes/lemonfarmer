@@ -5,7 +5,8 @@
 import * as $0 from "./routes/api/agent.ts";
 import * as $1 from "./routes/api/init.ts";
 import * as $2 from "./routes/index.tsx";
-import * as $3 from "./routes/systems/index.tsx";
+import * as $3 from "./routes/systems/[symbol].tsx";
+import * as $4 from "./routes/systems/index.tsx";
 import * as $$0 from "./islands/StarChart.tsx";
 import * as $$1 from "./islands/StarChartD3Old.tsx";
 import * as $$2 from "./islands/StarChartItem.tsx";
@@ -16,7 +17,8 @@ const manifest = {
     "./routes/api/agent.ts": $0,
     "./routes/api/init.ts": $1,
     "./routes/index.tsx": $2,
-    "./routes/systems/index.tsx": $3,
+    "./routes/systems/[symbol].tsx": $3,
+    "./routes/systems/index.tsx": $4,
   },
   islands: {
     "./islands/StarChart.tsx": $$0,

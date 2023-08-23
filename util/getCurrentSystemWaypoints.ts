@@ -27,7 +27,7 @@ const getMyAgent = async (): Promise<Agent> => {
 const getAgentHqSystem = (agent: Agent): string =>
   agent.headquarters.split("-").slice(0, 2).join("-");
 
-const getSystemWaypoints = async (
+export const getSystemWaypoints = async (
   system: string
 ): Promise<readonly Waypoint[]> => {
   const response = await fetch(
