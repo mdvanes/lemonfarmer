@@ -1,12 +1,5 @@
 import { HandlerContext, Status } from "$fresh/server.ts";
-import { config } from "dotenv/mod.ts";
-
-const options = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${config().TOKEN}`,
-  },
-};
+import { options } from "../../util/fetchOptions.ts";
 
 // https://docs.spacetraders.io/quickstart/new-game
 export const handler = async (

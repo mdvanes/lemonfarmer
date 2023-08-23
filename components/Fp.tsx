@@ -4,22 +4,13 @@ import { Task } from "fp-ts/lib/Task";
 import { TaskEither } from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
 import { Waypoint, WaypointsResponse } from "../spacetrader.types.ts";
-// import { options } from "../util/fetchOptions.ts";
+import { options } from "../util/fetchOptions.ts";
 import { Either, left, right } from "fp-ts/lib/Either";
 import TE from "../util/taskEitherUtils.ts";
-import { config } from "dotenv/mod.ts";
 
 const debugLog = console.debug;
 
 const logValue = TE.logValueWith(debugLog);
-
-const options = {
-  headers: {
-    "Content-Type": "application/json",
-    // During alpha token expires every 2 weeks, then you have to re-register by calling http://localhost:8000/api/init and storing the resulting token in .env
-    Authorization: `Bearer ${config().TOKEN}`,
-  },
-};
 
 function add1(num: number): number {
   return num + 1;

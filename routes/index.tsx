@@ -1,26 +1,10 @@
 import { Head } from "$fresh/runtime.ts";
 // import Counter from "../islands/Counter.tsx";
 import { Handlers, PageProps, Status } from "$fresh/server.ts";
-import { config } from "dotenv/mod.ts";
 import { getCurrentSystemWaypoints } from "../util/getCurrentSystemWaypoints.ts";
 import StarChart from "../islands/StarChart.tsx";
 import { Waypoint } from "../spacetrader.types.ts";
 import { Fp } from "../components/Fp.tsx";
-
-const options = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${config().TOKEN}`,
-  },
-};
-
-// interface Waypoint {
-//   symbol: string;
-//   systemSymbol: string;
-//   x: number;
-//   y: number;
-//   type: string;
-// }
 
 interface Props {
   waypoints: readonly Waypoint[];
