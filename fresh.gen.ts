@@ -8,7 +8,8 @@ import * as $2 from "./routes/api/start-location.ts";
 import * as $3 from "./routes/index.tsx";
 import * as $$0 from "./islands/StarChart.tsx";
 import * as $$1 from "./islands/StarChartD3Old.tsx";
-import * as $$2 from "./islands/StarChartOld.tsx";
+import * as $$2 from "./islands/StarChartItem.tsx";
+import * as $$3 from "./islands/StarChartOld.tsx";
 
 const manifest = {
   routes: {
@@ -20,7 +21,8 @@ const manifest = {
   islands: {
     "./islands/StarChart.tsx": $$0,
     "./islands/StarChartD3Old.tsx": $$1,
-    "./islands/StarChartOld.tsx": $$2,
+    "./islands/StarChartItem.tsx": $$2,
+    "./islands/StarChartOld.tsx": $$3,
   },
   baseUrl: import.meta.url,
 };

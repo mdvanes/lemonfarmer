@@ -1,3 +1,9 @@
+html,
+body {
+  background-color: #011627;
+  color: #fffef5;
+}
+
 .star-chart .axis .domain {
   display: none;
 }
@@ -12,6 +18,7 @@
 }
 
 .star-chart .view {
-  fill: url(#gradient);
+  /* fill: url(#gradient); */
+  fill: black;
   stroke: #000;
 }

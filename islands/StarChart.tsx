@@ -1,7 +1,8 @@
 import * as d3 from "d3";
 import { Ref, useEffect, useRef } from "preact/hooks";
 import { Head } from "$fresh/runtime.ts";
-import { Waypoint } from "../spacetrader.types.ts";
+import { ChartItem } from "../spacetrader.types.ts";
+import StarChartItem from "./StarChartItem.tsx";
 
 const width = 1280;
 const height = 640;
@@ -18,10 +19,6 @@ type ZoomEventTransform = {
     _yScale: d3.ScaleLinear<number, number, never>
   ) => d3.AxisScale<d3.NumberValue>;
 };
-
-interface ChartItem extends Pick<Waypoint, "type" | "x" | "y"> {
-  name: string;
-}
 
 interface Props {
   items: ChartItem[];
@@ -85,12 +82,17 @@ const maxItemProp = (items: ChartItem[], itemProp: "x" | "y"): number => {
   return Math.max(...absMinMax);
 };
 
+const getSatelliteItems = (items: ChartItem[], d: ChartItem): ChartItem[] => {
+  return items.filter((item) => item.x === d.x && item.y === d.y);
+};
+
 const getMoonsLabel = (items: ChartItem[], d: ChartItem) => {
   const nr = items.filter(
     (item) => item.x === d.x && item.y === d.y && item.type === "MOON"
   ).length;
 
-  return nr > 0 ? `+ ${nr} moons` : "";
+  // return nr > 0 ? `+ ${nr} moons 🌙` : "";
+  return "🌙 ".repeat(nr);
 };
 
 const getStationsLabel = (items: ChartItem[], d: ChartItem) => {
@@ -99,27 +101,65 @@ const getStationsLabel = (items: ChartItem[], d: ChartItem) => {
       item.x === d.x && item.y === d.y && item.type === "ORBITAL_STATION"
   ).length;
 
-  return nr > 0 ? `+ ${nr} stations` : "";
+  // return nr > 0 ? `+ ${nr} stations 🛰️` : "";
+  return "🛰️ ".repeat(nr);
 };
 
 const getItemColor = (d: ChartItem) => {
   if (d.type === "PLANET") {
-    return "blue";
+    return "blue"; // 🪐
   }
   if (d.type === "JUMP_GATE") {
-    return "purple";
+    return "purple"; // 🌉
   }
   if (d.type === "GAS_GIANT") {
-    return "red";
+    return "red"; // ⭐
   }
   if (d.type === "ASTEROID_FIELD") {
-    return "green";
+    return "green"; // 🌠
   }
   return "black";
 };
 
+const createGetItemIcon =
+  (
+    xScale: d3.ScaleLinear<number, number, never>,
+    yScale: d3.ScaleLinear<number, number, never>
+  ) =>
+  (d: ChartItem) => {
+    if (d.type === "PLANET") {
+      return (
+        <text x={xScale(d.x)} y={yScale(d.y)}>
+          🪐
+        </text>
+      );
+    }
+    if (d.type === "JUMP_GATE") {
+      return (
+        <text x={xScale(d.x)} y={yScale(d.y)}>
+          🌉
+        </text>
+      ); // 🌉
+    }
+    if (d.type === "GAS_GIANT") {
+      return (
+        <text x={xScale(d.x)} y={yScale(d.y)}>
+          ⭐
+        </text>
+      ); // ⭐
+    }
+    if (d.type === "ASTEROID_FIELD") {
+      return (
+        <text x={xScale(d.x)} y={yScale(d.y)}>
+          🌠
+        </text>
+      ); // 🌠
+    }
+    return <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" />;
+  };
+
 const StarChart = ({ items }: Props) => {
-  console.log(items);
+  // console.log(items);
   const gxRef = useRef<SVGGElement>(null);
   const gyRef = useRef<SVGGElement>(null);
   const dataPointsRef = useRef<SVGGElement>(null);
@@ -146,6 +186,8 @@ const StarChart = ({ items }: Props) => {
     // .range(!yMinMax[0] || !yMinMax[1] ? [0, 0] : yMinMax);
     .range([-1, height + 1]);
   const updateYAxis = createUpdateYAxis(gyRef, yScale);
+
+  const getItemIcon = createGetItemIcon(xScale, yScale);
 
   // const calcX = d3.scaleLinear(
   //   [0, data.length - 1],
@@ -201,7 +243,7 @@ const StarChart = ({ items }: Props) => {
         <link rel="stylesheet" href="star-chart.css" />
       </Head>
       <svg width={width} height={height} className="star-chart">
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        {/* <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0.0%" stop-color="#2c7bb6"></stop>
           <stop offset="12.5%" stop-color="#00a6ca"></stop>
           <stop offset="25.0%" stop-color="#00ccbc"></stop>
@@ -211,7 +253,7 @@ const StarChart = ({ items }: Props) => {
           <stop offset="75.0%" stop-color="#f29e2e"></stop>
           <stop offset="87.5%" stop-color="#e76818"></stop>
           <stop offset="100.0%" stop-color="#d7191c"></stop>
-        </linearGradient>
+        </linearGradient> */}
         <rect
           className="view"
           x={0}
@@ -261,13 +303,32 @@ const StarChart = ({ items }: Props) => {
               (item) => item.type !== "MOON" && item.type !== "ORBITAL_STATION"
             )
             .map((d, i) => (
-              <g key={i} fill={getItemColor(d)} stroke={getItemColor(d)}>
-                <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" />
-                <text x={xScale(d.x)} y={yScale(d.y)}>
-                  {d.name} {getMoonsLabel(items, d)}{" "}
-                  {getStationsLabel(items, d)}
-                </text>
-              </g>
+              <StarChartItem
+                key={i}
+                d={d}
+                satelliteItems={getSatelliteItems(items, d)}
+                xScale={xScale}
+                yScale={yScale}
+              />
+              // TODO extract to component
+              // <g key={i} fill={getItemColor(d)} stroke={getItemColor(d)}>
+              //   {getItemIcon(d)}
+              //   {/* <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" /> */}
+              //   <text
+              //     x={xScale(d.x + 3)}
+              //     y={yScale(d.y - 3)}
+              //     style={{ fontSize: 12 }}
+              //   >
+              //     {d.name}
+              //   </text>
+              //   <text
+              //     x={xScale(d.x + 3)}
+              //     y={yScale(d.y + 4)}
+              //     style={{ fontSize: 12 }}
+              //   >
+              //     {getMoonsLabel(items, d)} {getStationsLabel(items, d)}
+              //   </text>
+              // </g>
             ))}
         </g>
       </svg>
