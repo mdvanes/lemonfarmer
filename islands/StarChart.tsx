@@ -4,7 +4,7 @@ import { Head } from "$fresh/runtime.ts";
 import { ChartItem } from "../spacetrader.types.ts";
 import StarChartItem from "./StarChartItem.tsx";
 
-const width = 1024;
+const width = 1280;
 const height = 640;
 // const marginTop = 20;
 // const marginRight = 20;

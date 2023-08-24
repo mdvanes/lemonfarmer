@@ -15,7 +15,7 @@ export default function Layout({ Component, params, route }: LayoutProps) {
       return `System ${params.symbol}`;
     }
 
-    return "System ???"; // TODO value should come from myAgent api _ see Async layouts with Define helper on https://fresh.deno.dev/docs/concepts/layouts
+    return "System ???"; // TODO value should come from myAgent api _ see Async layouts with Define helper on https://fresh.deno.dev/docs/concepts/layouts _
   })();
 
   return (
@@ -36,44 +36,19 @@ export default function Layout({ Component, params, route }: LayoutProps) {
           href="https://fonts.googleapis.com/css2?family=family=Roboto+Condensed:wght@700"
           rel="stylesheet"
         />
+        <link rel="stylesheet" href="/global.css" />
         <link rel="stylesheet" href="/lcars.css" />
       </Head>
 
-      <div class="mx-auto max-w-7xl pt-4">
+      <div class="mx-auto p-4">
         <div class="flex pb-8">
           <Lcars systemName={systemName}>
-            <Component />
+            <>
+              <Component />
+              <Fp />
+            </>
           </Lcars>
-          {/* <div class="lcars">
-            <div class="top">
-              <div class="title">LEMON FARMER</div>
-            </div>
-            <div class="bottom">
-              <div class="left">
-                <ul>
-                  <li>{systemName.toUpperCase()}</li>
-                </ul>
-              </div>
-              <main>my main</main>
-            </div>
-          </div> */}
         </div>
-
-        <div class="flex pb-8">
-          <div class="flex-1">{APP_TITLE}</div>
-          <div class="flex-none">{systemName}</div>
-        </div>
-
-        <Fp />
-
-        <div class="actions">
-          <NavLink />
-          <a title="go to hq system" href="/">
-            🚀
-          </a>
-        </div>
-
-        {/* <Component /> */}
       </div>
     </>
   );

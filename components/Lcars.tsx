@@ -1,4 +1,5 @@
 import { ComponentChildren } from "preact";
+import NavLink from "../islands/NavLink.tsx";
 
 const Lcars = ({
   children,
@@ -18,7 +19,8 @@ const Lcars = ({
             <li>{systemName.toUpperCase()}</li>
             <li class="spacer"></li>
             <li class="button">
-              <a href="/systems">SYSTEMS</a>
+              {/* <a href="/systems">SYSTEMS</a> */}
+              <NavLink />
             </li>
             <li class="button">
               <a href="/">AGENT HQ</a>
