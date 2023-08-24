@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks";
+import { ComponentChildren, FunctionComponent } from "preact";
 
 const spinner = (
   <svg
@@ -7,7 +8,10 @@ const spinner = (
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path fill="#011627" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z">
+    <path
+      fill="#011627"
+      d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"
+    >
       <animateTransform
         attributeName="transform"
         type="rotate"
@@ -19,18 +23,22 @@ const spinner = (
   </svg>
 );
 
-const NavLink = () => {
+const NavLink: FunctionComponent<{
+  title: string;
+  href: string;
+  children: ComponentChildren;
+}> = ({ title, href, children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
     <a
-      title="go to systems overview"
-      href="/systems"
+      title={title}
+      href={href}
       onClick={() => {
         setIsLoading(true);
       }}
     >
-      {isLoading ? spinner : 'SYSTEMS'}
+      {isLoading ? spinner : children}
     </a>
   );
 };

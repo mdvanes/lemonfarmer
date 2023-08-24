@@ -26,8 +26,6 @@ export const handler: Handlers<Props> = {
   },
 };
 
-const APP_TITLE = "🍋 Lemon 👨‍🌾 Farmer";
-
 export default function Home({ data: { hq, waypoints } }: PageProps<Props>) {
   // const count = useSignal(3);
   // const [isLoading, setIsLoading] = useState(false);

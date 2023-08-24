@@ -1,12 +1,19 @@
+:root {
+  --color-bg: #011627;
+  --color-bar-primary: #9b9bfd;
+  --color-bar-secondary: #ffaa90;
+  --color-text-primary: #f99c08;
+}
+
 .lcars {
-  color: #f99c08;
+  color: var(--color-text-primary);
   font-family: "Roboto Condensed", sans-serif;
   width: 100%;
   font-weight: bold;
 }
 
 .lcars .top {
-  background-color: #9b9bfd;
+  background-color: var(--color-bar-primary);
   border-top-left-radius: 40px;
   display: flex;
   justify-content: end;
@@ -14,7 +21,7 @@
 }
 
 .lcars .title {
-  background-color: #011627;
+  background-color: var(--color-bg);
   padding-left: 16px;
   font-size: 74px;
   line-height: 58px;
@@ -26,7 +33,7 @@
 }
 
 .lcars .left {
-  background-color: #9b9bfd;
+  background-color: var(--color-bar-primary);
   width: 250px;
   display: flex;
   justify-content: end;
@@ -36,7 +43,7 @@
   display: block;
   content: "";
   width: 40px;
-  background-color: #011627;
+  background-color: var(--color-bg);
   border-top-left-radius: 40px;
 }
 
@@ -46,23 +53,23 @@
 }
 
 .lcars .left li:first-child {
-  border-top: 5px solid #011627;
+  border-top: 5px solid var(--color-bg);
 }
 
 .lcars .left li {
-  background-color: #f99c08;
-  border-bottom: 5px solid #011627;
-  color: #011627;
+  background-color: var(--color-text-primary);
+  border-bottom: 5px solid var(--color-bg);
+  color: var(--color-bg);
   padding: 8px;
 }
 
 .lcars .left li.spacer {
-  background-color: #9b9bfd;
+  background-color: var(--color-bar-primary);
   height: 48px;
 }
 
 .lcars .left li.button {
-  background-color: #ffaa90;
+  background-color: var(--color-bar-secondary);
   cursor: pointer;
   padding: 0;
 }
@@ -72,7 +79,7 @@
 }
 
 .lcars .left li.button a {
-    display: block;
+  display: block;
   padding: 8px;
 }
 
