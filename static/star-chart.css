@@ -20,6 +20,7 @@
 }
 
 .chart-item-label {
+  stroke: white;
   font-size: 12px;
 }
 

@@ -31,7 +31,7 @@ const getItemColor = (d: ChartItem) => {
     return "grey";
   }
   if (d.type === "BLUE_STAR") {
-    return "blue";
+    return "#4583ff"; // blue
   }
   if (d.type === "RED_STAR") {
     return "red";
@@ -40,23 +40,23 @@ const getItemColor = (d: ChartItem) => {
     return "orange";
   }
   if (d.type === "WHITE_DWARF") {
-    return "white";
+    return "#a7a7a7"; // white
   }
   if (d.type === "HYPERGIANT") {
-    return "yellow";
+    return "#a0a51d"; // yellow
   }
-  if (d.type === "PLANET") {
-    return "blue";
-  }
-  if (d.type === "JUMP_GATE") {
-    return "purple";
-  }
-  if (d.type === "GAS_GIANT") {
-    return "red";
-  }
-  if (d.type === "ASTEROID_FIELD") {
-    return "green";
-  }
+  // if (d.type === "PLANET") {
+  //   return "blue";
+  // }
+  // if (d.type === "JUMP_GATE") {
+  //   return "purple";
+  // }
+  // if (d.type === "GAS_GIANT") {
+  //   return "red";
+  // }
+  // if (d.type === "ASTEROID_FIELD") {
+  //   return "green";
+  // }
   return "white";
 };
 
@@ -88,7 +88,7 @@ const createGetItemIcon =
       return <text {...c}>🌠</text>;
     }
     if (d.type === "HYPERGIANT") {
-      return <circle {...cc} r="10" />;
+      return <circle {...cc} r="15" />;
     }
     if (["BLUE_STAR", "RED_STAR", "ORANGE_STAR"].includes(d.type)) {
       return <circle {...cc} r="5" />;
