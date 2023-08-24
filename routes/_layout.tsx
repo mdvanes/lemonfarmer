@@ -32,15 +32,15 @@ export default defineLayout(async (_req, { Component, route, params }) => {
           crossOrigin="true"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=family=Roboto+Condensed:wght@700"
+          href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700"
           rel="stylesheet"
         />
         <link rel="stylesheet" href="/global.css" />
         <link rel="stylesheet" href="/lcars.css" />
       </Head>
 
-      <div class="mx-auto p-4">
-        <div class="flex pb-8">
+      <div class="mx-auto pt-4 pl-4 pr-4 h100">
+        <div class="flex h100">
           <Lcars systemName={systemName}>
             <>
               <Component />

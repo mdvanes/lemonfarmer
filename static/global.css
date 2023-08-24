@@ -2,6 +2,11 @@ html,
 body {
   background-color: #011627;
   color: #fffef5;
+  height: 100%;
+}
+
+.h100 {
+  height: 100%;
 }
 
 /* .actions {
