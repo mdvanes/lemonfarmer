@@ -13,3 +13,15 @@ deno task start
 ```
 
 This will watch the project directory and restart as necessary.
+
+Run tests:
+
+```
+deno test -A --watch fp_test.ts
+```
+
+Or run all tests:
+
+```
+deno test
+```
