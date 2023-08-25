@@ -1,6 +1,3 @@
-import * as A from "fp-ts/Array";
-import * as O from "fp-ts/Option";
-import { Task } from "fp-ts/lib/Task";
 import { TaskEither } from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
 import { Waypoint, WaypointsResponse } from "../../spacetrader.types.ts";
@@ -8,7 +5,12 @@ import { options } from "../fetchOptions.ts";
 import { Either, left, right } from "fp-ts/lib/Either";
 import TE from "./taskEitherUtils.ts";
 
-const debugLog = console.debug;
+const debug =
+  (fileName: string) =>
+  (...args: unknown[]) =>
+    console.debug(`[${fileName}] DEBUG:`, ...args);
+
+const debugLog = debug("getWaypointsFp");
 
 const logValue = TE.logValueWith(debugLog);
 
@@ -24,21 +26,11 @@ export const getWaypointsFp = (): TaskEither<Error, WaypointsResponse> => {
     // Promise<unknown>
   > = async () => {
     const system = "X1-JX88"; // TODO
-    // console.log("foo1");
     const response = await fetch(
       `https://api.spacetraders.io/v2/systems/${system}/waypoints`,
       options
     );
-    // console.log("foo2");
-    // return response;
-    // return response.json();
     const payload = await response.json();
-
-    // console.log(
-    //   "foo3",
-    //   payload,
-    //   payload.data.map((m: any) => m.x)
-    // );
 
     // TODO this is ridiculous of course, you want to validate status before resolving json()
     return {
@@ -60,7 +52,8 @@ export const getWaypointsFp = (): TaskEither<Error, WaypointsResponse> => {
     status: number;
     payload: object;
   }): Either<Error, WaypointsResponse> => {
-    return response.status > 200 && response.status < 400
+    debugLog("validateWaypointResponse", response.status);
+    return response.status >= 200 && response.status < 400
       ? right(response.payload as WaypointsResponse)
       : left(Error("System not found"));
   };
@@ -70,10 +63,8 @@ export const getWaypointsFp = (): TaskEither<Error, WaypointsResponse> => {
   // getWaypointResponseThunk();
 
   // Pipe computations
-//   console.log("this is called, but pipe is not executed?");
   return pipe(
     getWaypointResponseThunk,
-    // logValue("getWaypointResponseThunk"),
     TE.fromThunk,
     logValue("getWaypointResponseThunk"),
     TE.chainEither(validateWaypointResponse)
