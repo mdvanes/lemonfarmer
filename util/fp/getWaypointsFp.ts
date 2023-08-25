@@ -1,9 +1,11 @@
-import { TaskEither } from "fp-ts/lib/TaskEither";
+import { TaskEither, map } from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
 import { Waypoint, WaypointsResponse } from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
 import { Either, left, right } from "fp-ts/lib/Either";
 import TE from "./taskEitherUtils.ts";
+import * as A from "fp-ts/Array";
+import * as O from "fp-ts/Option";
 
 const debug =
   (fileName: string) =>
@@ -15,7 +17,7 @@ const debugLog = debug("getWaypointsFp");
 const logValue = TE.logValueWith(debugLog);
 
 // Source: https://kimmosaaskilahti.fi/blog/2019/08/29/using-fp-ts-for-http-requests-and-validation/
-export const getWaypointsFp = (): TaskEither<Error, WaypointsResponse> => {
+export const getWaypointsFp = (): TaskEither<Error, readonly Waypoint[]> => {
   // // I/O action for fetching user from API
   // const getUserThunk: Lazy<Promise<GetResponse>> = () => {
   //     debugLog("getUser");
@@ -58,15 +60,36 @@ export const getWaypointsFp = (): TaskEither<Error, WaypointsResponse> => {
       : left(Error("System not found"));
   };
 
+  // TODO should take Either?
+  //   const mapWaypointResponseToWaypoints = (response: WaypointsResponse): readonly Waypoint[] => {
+  //     return response.data;
+  //   };
+  const mapWaypointResponseToWaypoints = (
+    response: WaypointsResponse
+  ): readonly Waypoint[] => {
+    return response.data;
+  };
+
   // TODO const validateWaypoint - has x,y ; has faction
 
-  // getWaypointResponseThunk();
+  // TODO filter only type=planet (moons for planets?)
 
   // Pipe computations
-  return pipe(
+  const result = pipe(
     getWaypointResponseThunk,
     TE.fromThunk,
     logValue("getWaypointResponseThunk"),
-    TE.chainEither(validateWaypointResponse)
+    TE.chainEither(validateWaypointResponse),
+    map(mapWaypointResponseToWaypoints),
+    // TODO
+    map((w) => w.filter((_) => true)), // erase readonly - TODO remove readonly everywhere
+    map((w) =>
+      pipe(
+        w,
+        A.filter((p) => Boolean(p.x))
+      )
+    )
   );
+
+  return result;
 };

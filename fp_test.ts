@@ -29,8 +29,14 @@ Deno.test("👨‍🌾 handles getWaypointsFp", async () => {
   const resultEither = await thunk();
   const result = getRight(resultEither);
 
-  assertObjectMatch(result, {
-    data: [{ systemSymbol: "X1-JX88" }],
-    meta: { total: 10, page: 1, limit: 10 },
-  });
+  // old
+  //   assertObjectMatch(result, {
+  //     data: [{ systemSymbol: "X1-JX88" }],
+  //     meta: { total: 10, page: 1, limit: 10 },
+  //   });
+
+  assertEquals(result.length, 10);
+  // not allowed?
+  //   assertObjectMatch(result, [{ systemSymbol: "X1-JX88" }]);
+  assertObjectMatch(result[0], { systemSymbol: "X1-JX88" });
 });
