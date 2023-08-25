@@ -1,11 +1,11 @@
+import * as A from "fp-ts/Array";
+import { Either, left, right } from "fp-ts/lib/Either";
 import { TaskEither, map } from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
-import { Waypoint, WaypointsResponse } from "../../spacetrader.types.ts";
+import { external } from "../../generated/schema.d.ts";
+import { Waypoint } from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
-import { Either, left, right } from "fp-ts/lib/Either";
 import TE from "./taskEitherUtils.ts";
-import * as A from "fp-ts/Array";
-import * as O from "fp-ts/Option";
 
 const debug =
   (fileName: string) =>
@@ -16,8 +16,14 @@ const debugLog = debug("getWaypointsFp");
 
 const logValue = TE.logValueWith(debugLog);
 
+// Non-readonly version of WaypointsResponse
+interface UnsafeWaypointsResponse {
+  data: external["../models/Waypoint.json"][];
+  meta: external["../models/Meta.json"];
+}
+
 // Source: https://kimmosaaskilahti.fi/blog/2019/08/29/using-fp-ts-for-http-requests-and-validation/
-export const getWaypointsFp = (): TaskEither<Error, readonly Waypoint[]> => {
+export const getWaypointsFp = (): TaskEither<Error, Waypoint[]> => {
   // // I/O action for fetching user from API
   // const getUserThunk: Lazy<Promise<GetResponse>> = () => {
   //     debugLog("getUser");
@@ -52,11 +58,11 @@ export const getWaypointsFp = (): TaskEither<Error, readonly Waypoint[]> => {
   // };
   const validateWaypointResponse = (response: {
     status: number;
-    payload: object;
-  }): Either<Error, WaypointsResponse> => {
+    payload: object; // TODO fix object type
+  }): Either<Error, UnsafeWaypointsResponse> => {
     debugLog("validateWaypointResponse", response.status);
     return response.status >= 200 && response.status < 400
-      ? right(response.payload as WaypointsResponse)
+      ? right(response.payload as UnsafeWaypointsResponse)
       : left(Error("System not found"));
   };
 
@@ -65,8 +71,8 @@ export const getWaypointsFp = (): TaskEither<Error, readonly Waypoint[]> => {
   //     return response.data;
   //   };
   const mapWaypointResponseToWaypoints = (
-    response: WaypointsResponse
-  ): readonly Waypoint[] => {
+    response: UnsafeWaypointsResponse
+  ): Waypoint[] => {
     return response.data;
   };
 
@@ -81,8 +87,6 @@ export const getWaypointsFp = (): TaskEither<Error, readonly Waypoint[]> => {
     logValue("getWaypointResponseThunk"),
     TE.chainEither(validateWaypointResponse),
     map(mapWaypointResponseToWaypoints),
-    // TODO
-    map((w) => w.filter((_) => true)), // erase readonly - TODO remove readonly everywhere
     map((w) =>
       pipe(
         w,
