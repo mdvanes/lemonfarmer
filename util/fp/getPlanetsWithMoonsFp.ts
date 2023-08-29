@@ -16,11 +16,15 @@ const debugLog = debug("getWaypointsFp");
 
 const logValue = TE.logValueWith(debugLog);
 
-// Non-readonly version of WaypointsResponse
+// Writeable version of WaypointsResponse
 interface UnsafeWaypointsResponse {
   data: external["../models/Waypoint.json"][];
   meta: external["../models/Meta.json"];
 }
+
+// Writeable version of WaypointOrbital
+// type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+type UnsafeWaypointOrbital = external["../models/WaypointOrbital.json"];
 
 interface Planet extends Omit<Waypoint, "type"> {
   type: "PLANET";
@@ -31,8 +35,8 @@ interface Moon extends Omit<Waypoint, "type"> {
 }
 
 interface PlanetWithMoons extends Planet {
-  // type: 'PLANET';
-  moons: Moon[]; // Waypoint[];
+  type: "PLANET";
+  moons: Moon[];
 }
 
 const isValidWaypoint = (waypoint: Waypoint): boolean =>
@@ -90,13 +94,16 @@ export const createGetPlanetsWithMoonsFp =
       (p: Planet): PlanetWithMoons => {
         return {
           ...p,
-          moons: p.orbitals
-            .map((o) =>
-              waypoints
-                .filter(isMoon)
-                .filter((w) => w.symbol === o.symbol && isMoon(w))
+          moons: pipe(
+            p.orbitals as UnsafeWaypointOrbital[],
+            A.flatMap((o) =>
+              pipe(
+                waypoints,
+                A.filter(isMoon),
+                A.filter((w) => w.symbol === o.symbol)
+              )
             )
-            .flat(),
+          ),
         };
       };
 
@@ -107,6 +114,7 @@ export const createGetPlanetsWithMoonsFp =
       // logValue("getWaypointResponseThunk"),
       TE.chainEither(validateWaypointResponse),
       map(mapWaypointResponseToWaypoints),
+      // logValue("waypoints"),
       map((waypoints) =>
         pipe(
           waypoints,
@@ -114,7 +122,8 @@ export const createGetPlanetsWithMoonsFp =
           A.filter(isPlanet),
           A.map(aggregateMoonsByPlanet(waypoints))
         )
-      )
+      ),
+      // logValue("planets")
     );
 
     return result;
