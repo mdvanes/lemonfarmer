@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/lib/function";
 import { assertEquals } from "https://deno.land/std@0.200.0/assert/mod.ts";
 import { add1, multiply2 } from "./util/fp/math.ts";
-import { getWaypointsFp } from "./util/fp/getWaypointsFp.ts";
+import { createGetWaypointsFp } from "./util/fp/getWaypointsFp.ts";
 import { Either, fold } from "fp-ts/lib/Either";
 import { identity } from "fp-ts/lib/function";
 import { assertObjectMatch } from "https://deno.land/std@0.200.0/assert/assert_object_match.ts";
@@ -25,6 +25,9 @@ const getRight = <A>(either: Either<Error, A>): A => {
 };
 
 Deno.test("👨‍🌾 handles getWaypointsFp", async () => {
+  const getWaypointsFp = createGetWaypointsFp(
+    "http://localhost:3000/waypointsForSystem.json"
+  );
   const thunk = getWaypointsFp();
   const resultEither = await thunk();
   const result = getRight(resultEither);
@@ -38,5 +41,5 @@ Deno.test("👨‍🌾 handles getWaypointsFp", async () => {
   assertEquals(result.length, 10);
   // not allowed?
   //   assertObjectMatch(result, [{ systemSymbol: "X1-JX88" }]);
-  assertObjectMatch(result[0], { systemSymbol: "X1-JX88" });
+  assertObjectMatch(result[0], { systemSymbol: "X1-QB20" });
 });
