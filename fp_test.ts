@@ -38,8 +38,15 @@ Deno.test("👨‍🌾 handles getWaypointsFp", async () => {
   //     meta: { total: 10, page: 1, limit: 10 },
   //   });
 
-  assertEquals(result.length, 10);
-  // not allowed?
-  //   assertObjectMatch(result, [{ systemSymbol: "X1-JX88" }]);
-  assertObjectMatch(result[0], { systemSymbol: "X1-QB20" });
+  assertEquals(result.length, 3);
+
+  //   console.log(result);
+
+  assertObjectMatch(result[0], { symbol: "X1-QB20-78791D" });
+  assertObjectMatch(result[1], { symbol: "X1-QB20-61050B" });
+  assertEquals(result[1].moons.length, 3);
+  assertObjectMatch(result[1].moons[0], { symbol: "X1-QB20-40572B" });
+  assertObjectMatch(result[1].moons[1], { symbol: "X1-QB20-88193B" });
+  assertObjectMatch(result[1].moons[2], { symbol: "X1-QB20-92514D" });
+  assertObjectMatch(result[2], { symbol: "X1-QB20-57458X" });
 });
