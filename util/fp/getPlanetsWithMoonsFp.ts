@@ -14,7 +14,7 @@ const debug =
 
 const debugLog = debug("getWaypointsFp");
 
-const logValue = TE.logValueWith(debugLog);
+// const logValue = TE.logValueWith(debugLog);
 
 // Writeable version of WaypointsResponse
 interface UnsafeWaypointsResponse {
@@ -53,14 +53,8 @@ const isMoon = (waypoint: Waypoint): waypoint is Moon =>
 // Source: https://kimmosaaskilahti.fi/blog/2019/08/29/using-fp-ts-for-http-requests-and-validation/
 export const createGetPlanetsWithMoonsFp =
   (url: string) => (): TaskEither<Error, PlanetWithMoons[]> => {
-    // // I/O action for fetching user from API
-    // const getUserThunk: Lazy<Promise<GetResponse>> = () => {
-    //     debugLog("getUser");
-    //     return this.api.Users.current();
-    // };
     const getWaypointResponseThunk: Lazy<
-      Promise<{ status: number; payload: object }>
-      // Promise<unknown>
+      Promise<{ status: number; payload: UnsafeWaypointsResponse }>
     > = async () => {
       const response = await fetch(url, options);
       const payload = await response.json();
@@ -74,7 +68,7 @@ export const createGetPlanetsWithMoonsFp =
 
     const validateWaypointResponse = (response: {
       status: number;
-      payload: object; // TODO fix object type
+      payload: UnsafeWaypointsResponse;
     }): Either<Error, UnsafeWaypointsResponse> => {
       debugLog("validateWaypointResponse", response.status);
       return response.status >= 200 && response.status < 400
@@ -122,7 +116,7 @@ export const createGetPlanetsWithMoonsFp =
           A.filter(isPlanet),
           A.map(aggregateMoonsByPlanet(waypoints))
         )
-      ),
+      )
       // logValue("planets")
     );
 
