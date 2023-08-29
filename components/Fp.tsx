@@ -3,7 +3,7 @@ import * as O from "fp-ts/Option";
 import { Task } from "fp-ts/lib/Task";
 import { pipe } from "fp-ts/lib/function";
 import { Waypoint, WaypointsResponse } from "../spacetrader.types.ts";
-import { getWaypointsFp } from "../util/fp/getWaypointsFp.ts";
+import { getPlanetsWithMoonsFp } from "../util/fp/getPlanetsWithMoonsFp.ts";
 import { add1, multiply2 } from "../util/fp/math.ts";
 
 function concat(
@@ -146,7 +146,7 @@ export const Fp = () => {
   //   };
   //   run();
   // });
-  getWaypointsFp();
+  getPlanetsWithMoonsFp();
 
   return <div>fp {pipe(1, add1, multiply2)}</div>;
 };

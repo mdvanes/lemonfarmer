@@ -47,7 +47,7 @@ const isMoon = (waypoint: Waypoint): waypoint is Moon =>
   waypoint.type === "MOON";
 
 // Source: https://kimmosaaskilahti.fi/blog/2019/08/29/using-fp-ts-for-http-requests-and-validation/
-export const createGetWaypointsFp =
+export const createGetPlanetsWithMoonsFp =
   (url: string) => (): TaskEither<Error, PlanetWithMoons[]> => {
     // // I/O action for fetching user from API
     // const getUserThunk: Lazy<Promise<GetResponse>> = () => {
@@ -122,8 +122,11 @@ export const createGetWaypointsFp =
 
 // TODO also implement conform https://rlee.dev/practical-guide-to-fp-ts-part-3
 
-export const getWaypointsFp = (): TaskEither<Error, PlanetWithMoons[]> => {
+export const getPlanetsWithMoonsFp = (): TaskEither<
+  Error,
+  PlanetWithMoons[]
+> => {
   const system = "X1-QB20";
   const url = `https://api.spacetraders.io/v2/systems/${system}/waypoints`;
-  return createGetWaypointsFp(url)();
+  return createGetPlanetsWithMoonsFp(url)();
 };

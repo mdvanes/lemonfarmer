@@ -1,7 +1,7 @@
 import { pipe } from "fp-ts/lib/function";
 import { assertEquals } from "https://deno.land/std@0.200.0/assert/mod.ts";
 import { add1, multiply2 } from "./util/fp/math.ts";
-import { createGetWaypointsFp } from "./util/fp/getWaypointsFp.ts";
+import { createGetPlanetsWithMoonsFp } from "./util/fp/getPlanetsWithMoonsFp.ts";
 import { Either, fold } from "fp-ts/lib/Either";
 import { identity } from "fp-ts/lib/function";
 import { assertObjectMatch } from "https://deno.land/std@0.200.0/assert/assert_object_match.ts";
@@ -24,8 +24,8 @@ const getRight = <A>(either: Either<Error, A>): A => {
   }, identity)(either);
 };
 
-Deno.test("👨‍🌾 handles getWaypointsFp", async () => {
-  const getWaypointsFp = createGetWaypointsFp(
+Deno.test("👨‍🌾 can get PlanetsWithMoons (Fp)", async () => {
+  const getWaypointsFp = createGetPlanetsWithMoonsFp(
     "http://localhost:3000/waypointsForSystem.json"
   );
   const thunk = getWaypointsFp();
