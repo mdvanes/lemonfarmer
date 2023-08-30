@@ -2,8 +2,14 @@ import * as A from "fp-ts/Array";
 import { Either, left, right } from "fp-ts/lib/Either";
 import { TaskEither, map } from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
-import { external } from "../../generated/schema.d.ts";
-import { Waypoint } from "../../spacetrader.types.ts";
+import {
+  Moon,
+  Planet,
+  PlanetWithMoons,
+  UnsafeWaypointOrbital,
+  UnsafeWaypointsResponse,
+  Waypoint,
+} from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
 import TE from "./taskEitherUtils.ts";
 
@@ -15,29 +21,6 @@ const debug =
 const debugLog = debug("getWaypointsFp");
 
 // const logValue = TE.logValueWith(debugLog);
-
-// Writeable version of WaypointsResponse
-interface UnsafeWaypointsResponse {
-  data: external["../models/Waypoint.json"][];
-  meta: external["../models/Meta.json"];
-}
-
-// Writeable version of WaypointOrbital
-// type Writeable<T> = { -readonly [P in keyof T]: T[P] };
-type UnsafeWaypointOrbital = external["../models/WaypointOrbital.json"];
-
-interface Planet extends Omit<Waypoint, "type"> {
-  type: "PLANET";
-}
-
-interface Moon extends Omit<Waypoint, "type"> {
-  type: "MOON";
-}
-
-interface PlanetWithMoons extends Planet {
-  type: "PLANET";
-  moons: Moon[];
-}
 
 const isValidWaypoint = (waypoint: Waypoint): boolean =>
   typeof waypoint.x !== "undefined" &&
@@ -59,6 +42,7 @@ export const createGetPlanetsWithMoonsFp =
       const response = await fetch(url, options);
       const payload = await response.json();
 
+      // TODO error handeling is missing?
       // TODO this is ridiculous of course, you want to validate status before resolving json()
       return {
         status: response.status,
@@ -82,19 +66,30 @@ export const createGetPlanetsWithMoonsFp =
       return response.data;
     };
 
-    // TODO There is probably a more fp-ts way to aggregate moons by planet
     const aggregateMoonsByPlanet =
       (waypoints: Waypoint[]) =>
       (p: Planet): PlanetWithMoons => {
         return {
           ...p,
+          // NOTE: implementation that has to flatten, because filter is used where only one result is expected
+          // moons: pipe(
+          //   p.orbitals as UnsafeWaypointOrbital[],
+          //   A.flatMap((o) =>
+          //     pipe(
+          //       waypoints,
+          //       A.filter(isMoon),
+          //       A.filter((w) => w.symbol === o.symbol)
+          //     )
+          //   )
+          // ),
+          // NOTE: implementation where findFirst returns an Option<Moon>, where filterMap only keeps the Some values
           moons: pipe(
             p.orbitals as UnsafeWaypointOrbital[],
-            A.flatMap((o) =>
+            A.filterMap((o) =>
               pipe(
                 waypoints,
                 A.filter(isMoon),
-                A.filter((w) => w.symbol === o.symbol)
+                A.findFirst((w) => w.symbol === o.symbol)
               )
             )
           ),
@@ -123,7 +118,10 @@ export const createGetPlanetsWithMoonsFp =
     return result;
   };
 
-// TODO also implement conform https://rlee.dev/practical-guide-to-fp-ts-part-3
+// TODO also implement with do notation
+// TODO also implement with fp-ts-effects
+// TODO also implement with lodash fp
+// TODO also implement without fp-ts
 
 export const getPlanetsWithMoonsFp = (): TaskEither<
   Error,

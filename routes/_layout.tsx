@@ -42,10 +42,7 @@ export default defineLayout(async (_req, { Component, route, params }) => {
       <div class="mx-auto pt-4 pl-4 pr-4 h100">
         <div class="flex h100">
           <Lcars systemName={systemName}>
-            <>
-              <Component />
-              <Fp />
-            </>
+            <Component />
           </Lcars>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { ComponentChildren } from "preact";
 import NavLink from "../islands/NavLink.tsx";
+import { Fp } from "./Fp.tsx";
 
 export const APP_TITLE_FANCY = "🍋 Lemon 👨‍🌾 Farmer";
 export const APP_TITLE = "Lemon Farmer";
@@ -30,6 +31,10 @@ const Lcars = ({
               <NavLink title="go to agent hq system" href="/">
                 AGENT HQ
               </NavLink>
+            </li>
+            <li class="spacer"></li>
+            <li>
+              <Fp />
             </li>
           </ul>
         </div>

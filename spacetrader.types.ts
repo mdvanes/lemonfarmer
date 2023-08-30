@@ -52,3 +52,26 @@ export type System = external["../models/System.json"];
 
 export type SystemsResponse =
   paths["/systems"]["get"]["responses"][200]["content"]["application/json"];
+
+// Writeable version of WaypointsResponse
+export interface UnsafeWaypointsResponse {
+  data: external["../models/Waypoint.json"][];
+  meta: external["../models/Meta.json"];
+}
+
+// Writeable version of WaypointOrbital
+// type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+export type UnsafeWaypointOrbital = external["../models/WaypointOrbital.json"];
+
+export interface Planet extends Omit<Waypoint, "type"> {
+  type: "PLANET";
+}
+
+export interface Moon extends Omit<Waypoint, "type"> {
+  type: "MOON";
+}
+
+export interface PlanetWithMoons extends Planet {
+  type: "PLANET";
+  moons: Moon[];
+}
