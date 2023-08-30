@@ -19,7 +19,7 @@
   stroke: #000;
 }
 
-.chart-item-label {
+.star-chart .chart-item-label {
   stroke: white;
   font-size: 12px;
 }
@@ -29,38 +29,28 @@
   stroke-width: 10;
 }
 
+.star-chart .moons-group {
+  animation-duration: 35s;
+  animation-name: moonmoon;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.star-chart .moons-group.stations-group {
+  animation-duration: 5s;
+}
+
 .star-chart .moons-orbit {
   fill: transparent;
   stroke: rgba(255, 255, 255, 0.3);
 }
 
-.star-chart .a-moon {
-  animation-duration: 5s;
-  animation-name: moonmoon;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  /* transform: rotate(10, 769, 370); */
-  transform: rotate(0deg);
-  /* transform */
-  /* transform-origin: 769px 370px; */
-  transform-origin: 780px 364px;
-}
-
 @keyframes moonmoon {
   from {
-    /* margin-left: 100%;
-    width: 300%; */
-    /* transform: rotate(10, 769, 370); */
-    /* transform: rotate(10);
-    transform-origin: 769 370; */
     transform: rotate(0deg);
-    /* transform-origin: 780px 364px; */
   }
 
   to {
-    /* transform: rotate(90, 769, 370); */
     transform: rotate(360deg);
-    /* margin-left: 0%;
-    width: 100%; */
   }
 }

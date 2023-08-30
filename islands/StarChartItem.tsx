@@ -8,17 +8,8 @@ interface StarChartItemsProps {
   yScale: d3.ScaleLinear<number, number, never>;
 }
 
-const getMoonsLabel2 = (items: ChartItem[]) => {
-  const nr = items.filter(
-    (item) => item.type !== "NEBULA" && item.type === "MOON"
-  ).length;
-
-  // return nr > 0 ? `+ ${nr} moons 🌙` : "";
-  return "🌙 ".repeat(nr);
-};
-
 const getMoonsLabel = (items: ChartItem[], x: number, y: number) => {
-  const radius = 35;
+  const radius = 45;
   const moons = items.filter(
     (item) => item.type !== "NEBULA" && item.type === "MOON"
   );
@@ -27,26 +18,28 @@ const getMoonsLabel = (items: ChartItem[], x: number, y: number) => {
     return;
   }
 
-  return (
-    <g>
-      <circle class="moons-orbit" cx={x + 10} cy={y - 10} r={radius} />
-      {/* {moons.map((_m, i) => (
-        <text x={x + 10} y={y - 35}>
-          🌙
-        </text>
-      ))} */}
-      {/* https://spin.atomicobject.com/2015/06/12/objects-around-svg-circle-d3-js/ */}
-      {moons.map((_m, i) => {
-        const moonOriginX = x + radius * Math.sin(0);
-        const moonOriginY = y - radius * Math.cos(0);
-        console.log(moonOriginX, x, moonOriginY, y);
+  const rotationFragment = 1 / moons.length;
 
+  const cX = Math.floor(x + 10);
+  const cY = Math.floor(y - 10);
+
+  const moonOrbitRadius = radius + 7;
+  const moonOriginX = x + moonOrbitRadius * Math.sin(0);
+  const moonOriginY = y - moonOrbitRadius * Math.cos(0);
+
+  return (
+    <g class="moons-group" style={`transform-origin: ${cX}px ${cY}px`}>
+      <circle class="moons-orbit" cx={cX} cy={cY} r={radius} />
+
+      {moons.map((_m, i) => {
         return (
           <text
             x={moonOriginX}
             y={moonOriginY}
             class="a-moon"
-            // transform={`rotate(90, ${x}, ${y})`}
+            style={`transform: rotate(${
+              rotationFragment * i
+            }turn); transform-origin: ${cX}px ${cY}px`}
           >
             🌙
           </text>
@@ -54,18 +47,60 @@ const getMoonsLabel = (items: ChartItem[], x: number, y: number) => {
       })}
     </g>
   );
-  // return nr > 0 ? `+ ${nr} moons 🌙` : "";
-  // return "🌙 ".repeat(nr);
 };
 
-const getStationsLabel = (items: ChartItem[]) => {
-  const nr = items.filter(
+const getStationsLabel = (items: ChartItem[], x: number, y: number) => {
+  const radius = 35;
+  const stations = items.filter(
     (item) => item.type !== "NEBULA" && item.type === "ORBITAL_STATION"
-  ).length;
+  );
 
-  // return nr > 0 ? `+ ${nr} stations 🛰️` : "";
-  return "🛰️ ".repeat(nr);
+  if (stations.length < 1) {
+    return;
+  }
+
+  const rotationFragment = 1 / stations.length;
+
+  const cX = Math.floor(x + 10);
+  const cY = Math.floor(y - 10);
+
+  const moonOrbitRadius = radius + 7;
+  const moonOriginX = x + moonOrbitRadius * Math.sin(0);
+  const moonOriginY = y - moonOrbitRadius * Math.cos(0);
+
+  return (
+    <g
+      class="moons-group stations-group"
+      style={`transform-origin: ${cX}px ${cY}px`}
+    >
+      <circle class="moons-orbit" cx={cX} cy={cY} r={radius} />
+
+      {stations.map((_m, i) => {
+        return (
+          <text
+            x={moonOriginX}
+            y={moonOriginY}
+            class="a-moon"
+            style={`transform: rotate(${
+              rotationFragment * i
+            }turn); transform-origin: ${cX}px ${cY}px`}
+          >
+            🛰️
+          </text>
+        );
+      })}
+    </g>
+  );
 };
+
+// const getStationsLabel1 = (items: ChartItem[]) => {
+//   const nr = items.filter(
+//     (item) => item.type !== "NEBULA" && item.type === "ORBITAL_STATION"
+//   ).length;
+
+//   // return nr > 0 ? `+ ${nr} stations 🛰️` : "";
+//   return "🛰️ ".repeat(nr);
+// };
 
 const getItemColor = (d: ChartItem) => {
   if (d.type === "NEBULA") {
@@ -149,17 +184,13 @@ const StarChartItem = ({
   return (
     <g class="chart-item" fill={getItemColor(d)} stroke={getItemColor(d)}>
       {getItemIcon(d)}
-      {/* <circle cx={xScale(d.x)} cy={yScale(d.y)} r="2.5" /> */}
       <g className="chart-item-label">
         <text x={xScale(d.x + 3)} y={yScale(d.y - 3)}>
           {d.name === hq.join("-") || d.name === hq[0] ? "🚀" : ""}
           {d.name}
         </text>
         {getMoonsLabel(satelliteItems, xScale(d.x), yScale(d.y))}
-        <text x={xScale(d.x + 3)} y={yScale(d.y + 4)}>
-          {/* {getMoonsLabel(satelliteItems)}  */}
-          {getStationsLabel(satelliteItems)}
-        </text>
+        {getStationsLabel(satelliteItems, xScale(d.x), yScale(d.y))}
       </g>
     </g>
   );
