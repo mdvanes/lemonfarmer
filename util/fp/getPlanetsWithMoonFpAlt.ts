@@ -5,16 +5,16 @@ import { Lazy, pipe } from "fp-ts/lib/function";
 import { external } from "../../generated/schema.d.ts";
 import { Waypoint } from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
-import TE from "./taskEitherUtils.ts";
+// import TE from "./taskEitherUtils.ts";
 import { PlanetWithMoons } from "../../spacetrader.types.ts";
 import * as T from "fp-ts/lib/Task";
-import * as TE2 from "fp-ts/lib/TaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
 
 // TODO variant of getPlanetsWithMoonsFp conform https://rlee.dev/practical-guide-to-fp-ts-part-3
 // Does not use helpers from taskEitherUtils
 export const createGetPlanetsWithMoonsFpAlt =
   // (url: string) => (): TaskEither<Error, PlanetWithMoons[]> => {
-  (url: string) => (): any => {
+  (url: string) => (): TaskEither<Error, any> => {
     // const getWaypointResponseThunk: TaskEither<Error, any> = () => {
     //   const ok = pipe(
     //     TE2.tryCatch(
@@ -32,7 +32,7 @@ export const createGetPlanetsWithMoonsFpAlt =
     // };
 
     const getWaypointResponseThunk: TaskEither<Error, any> = pipe(
-      TE2.tryCatch(
+      TE.tryCatch(
         async () => {
           // error state: 'https://httpstat.us/500'
           const response = await fetch(url, options);
@@ -43,9 +43,9 @@ export const createGetPlanetsWithMoonsFpAlt =
         (reason) => new Error("??")
       )
     );
-    console.log(getWaypointResponseThunk())
+    // console.log(await getWaypointResponseThunk())
 
-    return;
+    return getWaypointResponseThunk;
   };
 
 export const getPlanetsWithMoonsFpAlt = (): TaskEither<

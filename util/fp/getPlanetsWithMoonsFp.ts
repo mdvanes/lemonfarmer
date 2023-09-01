@@ -1,6 +1,6 @@
 import * as A from "fp-ts/Array";
 import { Either, left, right } from "fp-ts/lib/Either";
-import { TaskEither, map } from "fp-ts/lib/TaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
 import {
   Moon,
@@ -11,16 +11,16 @@ import {
   Waypoint,
 } from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
-import TE from "./taskEitherUtils.ts";
+import TEUtils from "./taskEitherUtils.ts";
 
 const debug =
   (fileName: string) =>
   (...args: unknown[]) =>
     console.debug(`[${fileName}] DEBUG:`, ...args);
 
-const debugLog = debug("getWaypointsFp");
+export const debugLog = debug("getWaypointsFp");
 
-// const logValue = TE.logValueWith(debugLog);
+export const logValue = TEUtils.logValueWith(debugLog);
 
 const isValidWaypoint = (waypoint: Waypoint): boolean =>
   typeof waypoint.x !== "undefined" &&
@@ -35,7 +35,7 @@ const isMoon = (waypoint: Waypoint): waypoint is Moon =>
 
 // Source: https://kimmosaaskilahti.fi/blog/2019/08/29/using-fp-ts-for-http-requests-and-validation/
 export const createGetPlanetsWithMoonsFp =
-  (url: string) => (): TaskEither<Error, PlanetWithMoons[]> => {
+  (url: string) => (): TE.TaskEither<Error, PlanetWithMoons[]> => {
     const getWaypointResponseThunk: Lazy<
       Promise<{ status: number; payload: UnsafeWaypointsResponse }>
     > = async () => {
@@ -54,9 +54,9 @@ export const createGetPlanetsWithMoonsFp =
       status: number;
       payload: UnsafeWaypointsResponse;
     }): Either<Error, UnsafeWaypointsResponse> => {
-      debugLog("validateWaypointResponse", response.status);
+      // debugLog("validateWaypointResponse", response.status);
       return response.status >= 200 && response.status < 400
-        ? right(response.payload as UnsafeWaypointsResponse)
+        ? right(response.payload)
         : left(Error("System not found"));
     };
 
@@ -85,6 +85,7 @@ export const createGetPlanetsWithMoonsFp =
           // NOTE: implementation where findFirst returns an Option<Moon>, where filterMap only keeps the Some values
           moons: pipe(
             p.orbitals as UnsafeWaypointOrbital[],
+            // filterMap only keeps the Some values
             A.filterMap((o) =>
               pipe(
                 waypoints,
@@ -99,12 +100,15 @@ export const createGetPlanetsWithMoonsFp =
     // Pipe computations
     const result = pipe(
       getWaypointResponseThunk,
-      TE.fromThunk,
+      TEUtils.fromThunk,
       // logValue("getWaypointResponseThunk"),
-      TE.chainEither(validateWaypointResponse),
-      map(mapWaypointResponseToWaypoints),
+      TEUtils.chainEither(validateWaypointResponse),
+      TE.map(mapWaypointResponseToWaypoints),
       // logValue("waypoints"),
-      map((waypoints) =>
+
+      // TODO TE.flatMap() -> maybe possible to prevent nested pipes with flow
+
+      TE.map((waypoints) =>
         pipe(
           waypoints,
           A.filter(isValidWaypoint),
@@ -123,7 +127,7 @@ export const createGetPlanetsWithMoonsFp =
 // TODO also implement with lodash fp
 // TODO also implement without fp-ts
 
-export const getPlanetsWithMoonsFp = (): TaskEither<
+export const getPlanetsWithMoonsFp = (): TE.TaskEither<
   Error,
   PlanetWithMoons[]
 > => {
