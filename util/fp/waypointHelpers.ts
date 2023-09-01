@@ -1,4 +1,8 @@
-import { UnsafeWaypointsResponse, Waypoint } from "../../spacetrader.types.ts";
+import {
+  Planet,
+  UnsafeWaypointsResponse,
+  Waypoint,
+} from "../../spacetrader.types.ts";
 import { Either, left, right } from "fp-ts/lib/Either";
 
 export const validateWaypointResponse = (response: {
@@ -16,3 +20,6 @@ export const mapWaypointResponseToWaypoints = (
 ): Waypoint[] => {
   return response.data;
 };
+
+export const isPlanet = (waypoint: Waypoint): waypoint is Planet =>
+  waypoint.type === "PLANET";

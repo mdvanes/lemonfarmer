@@ -9,8 +9,14 @@ import { options } from "../fetchOptions.ts";
 import { PlanetWithMoons } from "../../spacetrader.types.ts";
 import * as T from "fp-ts/lib/Task";
 import * as TE from "fp-ts/lib/TaskEither";
-import { mapWaypointResponseToWaypoints, validateWaypointResponse } from "./waypointHelpers.ts";
+import * as IO from "fp-ts/lib/IO";
+import {
+isPlanet,
+  mapWaypointResponseToWaypoints,
+  validateWaypointResponse,
+} from "./waypointHelpers.ts";
 import { createLogger } from "./logHelpers.ts";
+import { info } from "fp-ts/lib/Console";
 
 const logger = createLogger("getPlanetsWithMoonFpAlt");
 
@@ -34,11 +40,16 @@ export const createGetPlanetsWithMoonsFpAlt =
     //   );
     //   return ok;
     // };
+  
+const foo = (): Either<Error, any> => {
+  return right('')
+}
 
     const getWaypointResponseThunk: TaskEither<Error, any> = pipe(
       TE.tryCatch(
         async () => {
           // error state: 'https://httpstat.us/500'
+          // TODO Broken:
           // const response = await fetch('https://httpstat.us/500');
           const response = await fetch(url, options);
           const payload = await response.json();
@@ -50,14 +61,29 @@ export const createGetPlanetsWithMoonsFpAlt =
         },
         (reason) => new Error("??")
       ),
+      // TE.tapIO(info),
       // TE.map(logger('foo')),
-      // TE.map(logger('has .data?', x => Boolean(x.data))),
-      TE.chainEitherK(validateWaypointResponse),
+      TE.tapIO((r) => info(`has .data? ${Boolean(r.payload.data)}`)),
+      // TE.map(logger('has .data?', x => Boolean(x.payload.data))),
+      // info(x => x),
+      // TE.map(info),
+      // alias for flatMapEither: TE.chainEitherK(validateWaypointResponse),
+      TE.flatMapEither(validateWaypointResponse),
       TE.map(mapWaypointResponseToWaypoints),
       // TE.map(logger('bar', x => x)),
-      TE.map((w) =>
+      // TE.chain((x, y) => right(x)),
+      // TE.flatMap(w => Boolean(w) ? right(w) : left(Error('??'))),
+      // TE.flatMapEither(foo),
+      TE.map((waypoints) =>
         pipe(
-          w,
+          waypoints,
+          // IO.tapIO(info),
+          // ? T.tapIO(info),
+          A.filter(isPlanet),
+          // A
+          // T.tapIO(info),
+          // A.map(info),
+          // TODO how to do tapIO(info) in A.map ?
           A.map(logger("waypoint symbol:", (x) => x.symbol))
           // A.map((w1) => w1.systemSymbol)
         )

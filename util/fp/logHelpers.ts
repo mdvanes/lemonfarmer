@@ -1,4 +1,6 @@
-const identity = <T>(x: T): T => x;
+import { identity } from "fp-ts/lib/function";
+
+// const identity = <T>(x: T): T => x;
 
 export const createLogger =
   (appName: string) =>

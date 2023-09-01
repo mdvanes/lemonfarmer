@@ -60,13 +60,10 @@ Deno.test("👨‍🌾 can get PlanetsWithMoons ALT (Fp)", async () => {
   const thunk = getWaypointsFp();
   const resultEither = await thunk();
   const result = getRight(resultEither);
-  console.log(result);
-
-  /*
-
+  // console.log(result);
 
   assertEquals(result.length, 3);
-
+  /*
   //   console.log(result);
 
   assertObjectMatch(result[0], { symbol: "X1-QB20-78791D" });

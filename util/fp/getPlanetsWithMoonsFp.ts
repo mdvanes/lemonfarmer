@@ -12,6 +12,7 @@ import {
 import { options } from "../fetchOptions.ts";
 import TEUtils from "./taskEitherUtils.ts";
 import {
+  isPlanet,
   mapWaypointResponseToWaypoints,
   validateWaypointResponse,
 } from "./waypointHelpers.ts";
@@ -29,9 +30,6 @@ const isValidWaypoint = (waypoint: Waypoint): boolean =>
   typeof waypoint.x !== "undefined" &&
   typeof waypoint.y !== "undefined" &&
   typeof waypoint.faction !== "undefined";
-
-const isPlanet = (waypoint: Waypoint): waypoint is Planet =>
-  waypoint.type === "PLANET";
 
 const isMoon = (waypoint: Waypoint): waypoint is Moon =>
   waypoint.type === "MOON";
