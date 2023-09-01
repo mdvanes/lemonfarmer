@@ -1,5 +1,4 @@
 import * as A from "fp-ts/Array";
-import { Either, left, right } from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
 import {
@@ -12,6 +11,10 @@ import {
 } from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
 import TEUtils from "./taskEitherUtils.ts";
+import {
+  mapWaypointResponseToWaypoints,
+  validateWaypointResponse,
+} from "./waypointHelpers.ts";
 
 const debug =
   (fileName: string) =>
@@ -48,22 +51,6 @@ export const createGetPlanetsWithMoonsFp =
         status: response.status,
         payload,
       };
-    };
-
-    const validateWaypointResponse = (response: {
-      status: number;
-      payload: UnsafeWaypointsResponse;
-    }): Either<Error, UnsafeWaypointsResponse> => {
-      // debugLog("validateWaypointResponse", response.status);
-      return response.status >= 200 && response.status < 400
-        ? right(response.payload)
-        : left(Error("System not found"));
-    };
-
-    const mapWaypointResponseToWaypoints = (
-      response: UnsafeWaypointsResponse
-    ): Waypoint[] => {
-      return response.data;
     };
 
     const aggregateMoonsByPlanet =
