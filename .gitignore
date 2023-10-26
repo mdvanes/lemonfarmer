@@ -6,3 +6,5 @@
 .env.local
 
 routes/api/init-response-example.json
+# Fresh build directory
+_fresh/
