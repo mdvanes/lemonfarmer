@@ -1,17 +1,17 @@
+// import { Either, left, right } from "fp-ts/lib/Either";
+// import { external } from "../../generated/schema.d.ts";
+// import { UnsafeWaypointsResponse, Waypoint } from "../../spacetrader.types.ts";
+// import * as IO from "fp-ts/lib/IO";
+// import * as T from "fp-ts/lib/Task";
+// import TE from "./taskEitherUtils.ts";
 import * as A from "fp-ts/Array";
-import { Either, left, right } from "fp-ts/lib/Either";
 import { TaskEither, map } from "fp-ts/lib/TaskEither";
 import { Lazy, pipe } from "fp-ts/lib/function";
-import { external } from "../../generated/schema.d.ts";
-import { UnsafeWaypointsResponse, Waypoint } from "../../spacetrader.types.ts";
 import { options } from "../fetchOptions.ts";
-// import TE from "./taskEitherUtils.ts";
 import { PlanetWithMoons } from "../../spacetrader.types.ts";
-import * as T from "fp-ts/lib/Task";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as IO from "fp-ts/lib/IO";
 import {
-isPlanet,
+  isPlanet,
   mapWaypointResponseToWaypoints,
   validateWaypointResponse,
 } from "./waypointHelpers.ts";
@@ -40,17 +40,14 @@ export const createGetPlanetsWithMoonsFpAlt =
     //   );
     //   return ok;
     // };
-  
-const foo = (): Either<Error, any> => {
-  return right('')
-}
+
+    // const foo = (): Either<Error, any> => {
+    //   return right("");
+    // };
 
     const getWaypointResponseThunk: TaskEither<Error, any> = pipe(
       TE.tryCatch(
         async () => {
-          // error state: 'https://httpstat.us/500'
-          // TODO Broken:
-          // const response = await fetch('https://httpstat.us/500');
           const response = await fetch(url, options);
           const payload = await response.json();
 
@@ -59,37 +56,19 @@ const foo = (): Either<Error, any> => {
             payload,
           };
         },
-        (reason) => new Error("??")
+        (_reason) => new Error("??")
       ),
-      // TE.tapIO(info),
-      // TE.map(logger('foo')),
       TE.tapIO((r) => info(`has .data? ${Boolean(r.payload.data)}`)),
-      // TE.map(logger('has .data?', x => Boolean(x.payload.data))),
-      // info(x => x),
-      // TE.map(info),
-      // alias for flatMapEither: TE.chainEitherK(validateWaypointResponse),
       TE.flatMapEither(validateWaypointResponse),
       TE.map(mapWaypointResponseToWaypoints),
-      // TE.map(logger('bar', x => x)),
-      // TE.chain((x, y) => right(x)),
-      // TE.flatMap(w => Boolean(w) ? right(w) : left(Error('??'))),
-      // TE.flatMapEither(foo),
       TE.map((waypoints) =>
         pipe(
           waypoints,
-          // IO.tapIO(info),
-          // ? T.tapIO(info),
           A.filter(isPlanet),
-          // A
-          // T.tapIO(info),
-          // A.map(info),
-          // TODO how to do tapIO(info) in A.map ?
           A.map(logger("waypoint symbol:", (x) => x.symbol))
-          // A.map((w1) => w1.systemSymbol)
         )
       )
     );
-    // console.log(await getWaypointResponseThunk())
 
     return getWaypointResponseThunk;
   };
