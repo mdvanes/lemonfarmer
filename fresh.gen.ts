@@ -7,13 +7,18 @@ import * as $1 from "./routes/_layout.tsx";
 import * as $2 from "./routes/api/agent.ts";
 import * as $3 from "./routes/api/init.ts";
 import * as $4 from "./routes/index.tsx";
-import * as $5 from "./routes/systems/[symbol].tsx";
-import * as $6 from "./routes/systems/index.tsx";
+import * as $5 from "./routes/soh/_layout.tsx";
+import * as $6 from "./routes/soh/index.tsx";
+import * as $7 from "./routes/systems/[symbol].tsx";
+import * as $8 from "./routes/systems/index.tsx";
 import * as $$0 from "./islands/NavLink.tsx";
 import * as $$1 from "./islands/StarChart.tsx";
 import * as $$2 from "./islands/StarChartD3Old.tsx";
 import * as $$3 from "./islands/StarChartItem.tsx";
 import * as $$4 from "./islands/StarChartOld.tsx";
+import * as $$5 from "./islands/soh/FormValidations.tsx";
+import * as $$6 from "./islands/soh/ShowPicker.tsx";
+import * as $$7 from "./islands/soh/TabsGroup.tsx";
 
 const manifest = {
   routes: {
@@ -22,8 +27,10 @@ const manifest = {
     "./routes/api/agent.ts": $2,
     "./routes/api/init.ts": $3,
     "./routes/index.tsx": $4,
-    "./routes/systems/[symbol].tsx": $5,
-    "./routes/systems/index.tsx": $6,
+    "./routes/soh/_layout.tsx": $5,
+    "./routes/soh/index.tsx": $6,
+    "./routes/systems/[symbol].tsx": $7,
+    "./routes/systems/index.tsx": $8,
   },
   islands: {
     "./islands/NavLink.tsx": $$0,
@@ -31,6 +38,9 @@ const manifest = {
     "./islands/StarChartD3Old.tsx": $$2,
     "./islands/StarChartItem.tsx": $$3,
     "./islands/StarChartOld.tsx": $$4,
+    "./islands/soh/FormValidations.tsx": $$5,
+    "./islands/soh/ShowPicker.tsx": $$6,
+    "./islands/soh/TabsGroup.tsx": $$7,
   },
   baseUrl: import.meta.url,
 };

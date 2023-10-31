@@ -1,0 +1,118 @@
+html,
+body {
+  min-height: 100%;
+  background-color: dimgrey;
+  color: lightblue;
+  padding-bottom: 50px;
+}
+
+.soh {
+  padding: 30px;
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+  background-color: dimgrey;
+  min-height: 100%;
+}
+
+.soh > div {
+  background-color: darkslategrey;
+  padding: 30px;
+}
+
+.soh form:invalid {
+  border: 10x dashed red;
+}
+
+.soh input:invalid {
+  outline: 10x dashed red;
+}
+
+.soh input:valid {
+  outline: 1px solid green;
+}
+
+.soh details {
+  /* border: 1px solid blue; */
+}
+
+.soh .details-group {
+  /* border: 1px solid blue; */
+  /* background-color: #222; */
+  border-radius: 8px;
+  /* color: black; */
+  margin-bottom: 24px;
+  width: 500px;
+}
+
+.soh .details-group details {
+  background-color: #222;
+  border-bottom: 1px solid #444;
+  color: white;
+  padding: 1rem 2rem;
+  /* border-radius: 8px; */
+}
+
+.soh .details-group details:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.soh .details-group details:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.soh .details-group details summary::marker {
+  border: 1px solid red;
+  /* font-size: 33px; */
+}
+
+.soh .details-group details summary {
+  list-style: "👍 ";
+}
+
+.soh .details-group details[open] summary {
+  list-style: "👎 ";
+}
+
+.soh .details-group details > p {
+  padding: 2rem 0 0 0;
+}
+
+.soh .details-group details[open] {
+  margin-bottom: 1rem;
+}
+
+.soh .tabs-group {
+  display: flex;
+  flex-direction: row;
+  width: 500px;
+  height: 100px;
+  position: relative;
+}
+
+.soh .tabs-group details {
+  flex: 1;
+}
+
+.soh .tabs-group details summary {
+  list-style-type: "";
+  padding: 1rem;
+  user-select: none;
+  cursor: pointer;
+  border-bottom: 1px solid white;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.soh .tabs-group details[open] summary {
+  border-bottom: 5px solid white;
+}
+
+.soh .tabs-group details > p {
+  padding: 1rem;
+  position: absolute;
+  left: 0;
+}
